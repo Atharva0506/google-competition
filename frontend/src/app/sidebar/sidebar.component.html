@@ -1,32 +1,29 @@
-<div class="flex flex-col m-4">
-    <div class="font-bold text-xl  border-b-2 p-2 border-[#000000]">News Feed </div>
-    @for (item of items; track $index) {
-        <div class="flex flex-col m-4">
-            <div class="font-bold text-xl border-b-2 p-2 border-[#000000]">News Feed</div>
+<div class="flex flex-col m-4 text-primary">
+    <div class="font-bold text-xl  border-b-2 p-2 border-primary">News Feed </div>
+        <div class="flex flex-col mt-2">
             @for (item of items; track $index) {
-            <div class="w-full p-2 border-b-2 mt-2 border-[#000000]">
+            <div class="w-full p-2 border-b-2 mt-2 border-primary">
               <div class="flex items-center gap-2">
                 <div class="w-6 h-6">
-                  <img [src]="item.logo" alt="Icon" class="rounded-sm w-full h-full object-cover">
+                  <img [src]="item.logo" alt="Icon" class="rounded-lg w-full h-full object-cover">
                 </div>
-                <h4 class="text-sm font-light">{{item.name}}</h4>
+                <h4 class="text-xs font-light">{{item.name}}</h4>
               </div>
               <div class="flex h-full overflow-hidden">
                 <div class="flex flex-col gap-2 max-h-50 max-w-100">
-                  <h2 class="font-normal capitalize">{{item.tital}}</h2>
-                  <p class="text-sm font-medium overflow-hidden line-clamp-4">
+                  <h2 class="text-lg  capitalize mt-2">{{item.tital}}</h2>
+                  <p class="text-xs overflow-hidden line-clamp-4">
                     {{item.desc}}
                   </p>
                 </div>
                 <div class="flex flex-col p-2 items-center">
-                  <div class="w-32 h-22">
-                    <img [src]="item.newsImg" alt="Img" class="rounded-md w-full h-full object-cover">
+                  <div class="w-24 h-24">
+                    <img [src]="item.newsImg" alt="Img" class="rounded-xl w-full h-full object-cover">
                   </div>
-                  <span class="text-end">{{item.time}}</span>
+                  <span class="text-end mt-1 text-xs">{{item.time}}</span>
                 </div>
               </div>
             </div>
             }
           </div>
-}
 </div>
