@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-
 @Component({
-  selector: 'app-root',
+  selector: 'app-setting',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  templateUrl: './setting.component.html',
+  styleUrl: './setting.component.css'
 })
-export class AppComponent {
-  title = 'frontend';
+export class SettingComponent {
+
 }

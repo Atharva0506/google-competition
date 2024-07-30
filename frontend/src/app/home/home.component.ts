@@ -1,0 +1,16 @@
+import { Component } from '@angular/core';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { MainComponent } from '../main/main.component';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [NavbarComponent,MainComponent,SidebarComponent,FooterBtnComponent],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css'
+})
+export class HomeComponent {
+
+}
