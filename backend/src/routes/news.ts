@@ -2,7 +2,11 @@ import { Request, Response, Router } from "express";
 
 const router: Router = Router();
 
-router.get("/news-articles",(req:Request, res:Response)=>{
+// const keywords = "?keyword=technology&keyword=india&keyword=politics";
+
+router.get("/news-articles/",(req:Request, res:Response)=>{
+    const request = req.query;
+    console.log(request);
     //News articles fetching logic
     res.json({"top 5 curated news articles":["sdf sd", "sdffsd", "..."]})
 });

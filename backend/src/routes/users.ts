@@ -1,7 +1,6 @@
 // src/routes/user.ts
 import { Router } from 'express';
-import verifyToken from 'src/middleware/auth';
-
+import verifyToken from '../middleware/auth';
 const router = Router();
 
 router.get('/profile', verifyToken, (req, res) => {
