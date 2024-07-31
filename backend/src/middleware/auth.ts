@@ -5,7 +5,11 @@ import { Request } from "express-serve-static-core";
 import admin from '../config/firebaseAdmin';
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  
   const idToken = req.headers.authorization?.split('Bearer ')[1];
+
+  console.log(idToken);
+
   if (!idToken) {
     return res.status(401).send('Unauthorized');
   }
