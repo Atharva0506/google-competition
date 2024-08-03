@@ -25,5 +25,6 @@ npm start
 ##Run in Development Environment
 Run `npm run dev` which runs the script: `ts-node src/index.ts`
 
-Note that ts-node may have issue with custom type in this typescript project.
-
+#Important notes
+- ts-node may have issue with custom type in this typescript project.
+- firebaseServiceAccount.json has not been pushed due to security reasons.
