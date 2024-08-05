@@ -1,40 +1,30 @@
-<div class="px-4 bg-transparent text-primary md:mx-4 md:my-3 md:bg-foreground rounded-xl ">
-    <div class="flex items-center  border-b-2 border-primary p-3">
-        <div class="font-bold text-xl">Settings</div>
+<div class="bg-transparent text-primary md:mx-4 md:my-3 md:bg-foreground rounded-xl p-4">
+    <div class="border-b-2 border-primary pb-3 mb-4">
+        <h2 class="font-bold text-xl">Settings</h2>
     </div>
-    <div class="flex h-screen mx-4 my-1 w-full">
-        <div class="flex  flex-col border-r-2 border-primary py-2 pr-4 pl-0 mt-4 mr-3">
+    <div class=" py-4 md:flex md:flex-row md:h-screen">
+        <div class="hidden md:flex md:flex-col border-r-2 border-primary md:pr-4 md:mr-4 pb-4 ">
             <button
-                class="w-full hover:bg-primary hover:text-foreground transition flex gap-1 justify-center items-center  px-4 py-1 text-lg rounded-lg font-medium mb-4">
+                class="flex items-center gap-2 text-lg font-medium text-center hover:bg-primary hover:text-foreground transition px-2 py-2 rounded-lg mb-4 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-7">
+                    stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
-                <span>User Preference</span></button>
+                <span class="whitespace-nowrap">User Preference</span>
+            </button>
+
             <button
-                class="w-100 hover:bg-primary hover:text-foreground  flex gap-1 justify-start items-center text-primary px-4 py-1 text-lg rounded-lg font-medium ">
+                class="flex items-center gap-2 text-lg justify-start font-medium hover:bg-primary hover:text-foreground transition px-4 py-2 rounded-lg w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-7">
+                    stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
-                <span>Account</span></button>
+                <span>Account</span>
+            </button>
         </div>
-        <div class="m-4 p-4 ">
-            <div class="flex w-full justify-between gap-2">
-                <div class="relative  ">
-                    <input type="text" id="floating_outlined"
-                        class="block px-2.5 pb-2.5 pt-4 w-full  text-sm text-primary bg-transparent rounded-lg border" />
-                    <label for="floating_outlined"
-                        class="absolute text-xl text-primary scale-75 -top-3 -left-3 z-10 bg-foreground px-2">Personal
-                        Details</label>
-                </div>
-                <button class="text-base border border-primary px-4 py-1 rounded-lg transition hover:bg-primary hover:text-foreground ">
-                    Edit
-                </button>
-            </div>
-        </div>
+        <app-user-preference class="w-full"></app-user-preference>
     </div>
 </div>
