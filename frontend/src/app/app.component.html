@@ -1,7 +1,8 @@
-<main class=" overflow-hidden">
-    <div class="my-4 mx-2 md:my-2 md:mx-4">
-      <app-navbar />
-    </div>
-  </main>
-  <router-outlet class="h-screen w-screen overflow-hidden"></router-outlet>
-  
+<main class="min-h-screen ">
+  <div *ngIf="!isAuthRoute()" class="sticky top-0 z-10 bg-foreground my-4 mx-2 md:my-2 md:mx-4 shadow-md rounded-2xl">
+    <app-navbar></app-navbar>
+  </div>
+  <div class="flex-1 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </div>
+</main>

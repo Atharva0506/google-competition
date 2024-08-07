@@ -1,15 +1,23 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './pages/navbar/navbar.component';
+import { CommonModule } from '@angular/common';
+
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,NavbarComponent],
+  imports: [CommonModule,RouterOutlet,NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'News APP';
+  constructor(private router: Router) {}
+
+  isAuthRoute(): boolean {
+    const authRoutes = ['/login', '/signup']; 
+    return authRoutes.includes(this.router.url);
+  }
+
 }
