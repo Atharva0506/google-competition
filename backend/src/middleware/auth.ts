@@ -8,18 +8,20 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   
   const idToken = req.headers.authorization?.split('Bearer ')[1];
 
-  console.log(idToken);
-
   if (!idToken) {
     return res.status(401).send('Unauthorized');
   }
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedToken; 
+    req.user = decodedToken;
+    console.log("User verified successfully.");
+    
     //Using custom type from src/types/custom.d.ts for req.user type
     next();
   } catch (error) {
+    console.log(error);
+    
     return res.status(401).send('Unauthorized');
   }
 };

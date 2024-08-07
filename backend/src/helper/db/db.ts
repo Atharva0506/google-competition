@@ -1,18 +1,27 @@
 import { admin, db } from "../../config/firebaseAdmin";
+import { interestsIdentification } from "../geminiapi/gemini";
 
-async function setUserInterests(uid:string | undefined | string[], data:string[]){
+async function setUserInterests(uid:string, data:string){
     try {
-      await db.ref('users/'+uid+'/interests').set(data);
+      const aiData = await interestsIdentification(data);
+
+      const info = {
+        interests: aiData.interests,
+        countryCode : aiData.country
+      }
+      
+      await db.ref('users/'+uid+'/info').set(info);
+
     } catch (error) {
       console.error(error);
     }
     return;
 }
 
-async function getUserInterests(uid:string | undefined | string[]){
+async function getUserInterests(uid:string){
   try {
-    const snapshot = await db.ref('users/'+uid+'/interests').get();
-    const data = snapshot.val();
+    const snapshot = await db.ref('users/'+uid+'/info').get();
+    const data = await snapshot.val();
     return data;
   } catch (error) {
     console.error(error);
@@ -20,7 +29,7 @@ async function getUserInterests(uid:string | undefined | string[]){
   }
 }
 
-async function setUserSummaryStyle(uid:string | undefined | string[], data:string){
+async function setUserSummaryStyle(uid:string, data:string){
     try {
       await db.ref('users/'+uid+'/summary-style').set(data);
     } catch (error) {
@@ -29,10 +38,10 @@ async function setUserSummaryStyle(uid:string | undefined | string[], data:strin
     return;
 }
 
-async function getUserSummaryStyle(uid:string | undefined | string){
+async function getUserSummaryStyle(uid:string){
   try {
     const snapshot = await db.ref('users/'+uid+'/summary-style').get();
-    const data = snapshot.val();
+    const data = await snapshot.val();
     return data;
   } catch (error) {
     console.error(error);

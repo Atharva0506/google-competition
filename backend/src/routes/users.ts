@@ -15,8 +15,7 @@ async function createUser(email:string, password:string) {
   try {
     const userRecord = await admin.auth().createUser({
       email: email,
-      password: password,
-      displayName: 'John Doe' // Optional
+      password: password
     });
     console.log('Successfully created new user:', userRecord.uid);
     return userRecord;
@@ -43,7 +42,7 @@ router.post('/create-user', async (req, res) => {
 
   // Created temporarily for testing purpose only
   //create temp user for testing purpose
-  
+
   const userRecord = await createUser('user2@example.com', 'password123');
   const customToken = await createCustomToken(userRecord.uid);
   res.json({user: userRecord, token: customToken});
@@ -117,7 +116,7 @@ router.get('/interests', verifyToken, async (req, res) => {
   //   headers: {Authorization: Bearer token}, 
   // }
 
-  const idToken: string = req.headers.authorization!;
+  const idToken: string = req.headers.authorization!.split(' ')[1];
   const userId: string = await extractUidFromToken(idToken);
 
   try {
@@ -135,16 +134,12 @@ router.post('/interests', verifyToken, async (req, res) => {
   // Expected request: 
   // {
   //   headers: {Authorization: Bearer token}, 
-  //   body: interests:['topic 1','topic 2'..., 'topic n']
+  //   body: interests: "I am from XYZ country and like topic 1, topic 2 ... topic N.";
   // }
   const idToken: string = req.headers.authorization!.split(' ')[1];
-  const interests:string[] = req.body.interests;
+  const interests:string = req.body.interests;
 
   const userId: string = await extractUidFromToken(idToken);
-
-  console.log("Got req");
-  // const uid = "VKdcxJ94BsVd8ehJtvHwqnzNYYk2"
-  // const interests = ["sports", "cricket", "bollywood", "google"];
 
   try {
     await setUserInterests(userId, interests);
