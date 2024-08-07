@@ -16,7 +16,7 @@
     },
     "include": [
       "src/**/*.ts",
-      "src/types/**/*.d.ts",
+      "src/types/**/*.d.ts", "src/helper/db/db.ts",
     ],
     "exclude": ["node_modules"]
   }

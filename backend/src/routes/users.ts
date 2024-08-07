@@ -1,15 +1,56 @@
 // src/routes/user.ts
 import { Router } from 'express';
 import verifyToken from '../middleware/auth';
+import { admin } from '../config/firebaseAdmin';
 import checkUserExists from '../helper/auth/checkUser';
+import { getUserInterests, setUserInterests, getUserSummaryStyle, setUserSummaryStyle } from '../helper/db/db';
+import extractUidFromToken from '../helper/auth/decodeToken';
 
 const router = Router();
 
-router.get('/profile', verifyToken, (req, res) => {
-  // Fetch user profile from Firebase database
+async function createUser(email:string, password:string) {
+
+  //Created temporarily for testing purpose only
+
+  try {
+    const userRecord = await admin.auth().createUser({
+      email: email,
+      password: password,
+      displayName: 'John Doe' // Optional
+    });
+    console.log('Successfully created new user:', userRecord.uid);
+    return userRecord;
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
+}
+
+async function createCustomToken(uid:string) {
+
+  // Created temporarily for testing purpose only
+
+  try {
+    const customToken = await admin.auth().createCustomToken(uid);
+    return customToken;
+  } catch (error) {
+    console.error('Error creating custom token:', error);
+    throw error;
+  }
+}
+
+router.post('/create-user', async (req, res) => {
+
+  // Created temporarily for testing purpose only
+  //create temp user for testing purpose
+  
+  const userRecord = await createUser('user2@example.com', 'password123');
+  const customToken = await createCustomToken(userRecord.uid);
+  res.json({user: userRecord, token: customToken});
 });
 
-router.post("/:email", async (req,res)=>{
+
+router.post("/checkuser/:email", async (req,res)=>{
   //Check if user exists or not
 
   const email = req.params.email;
@@ -24,20 +65,96 @@ router.post("/:email", async (req,res)=>{
   }
 })
 
-router.put('/profile', verifyToken, (req, res) => {
-  // Update user profile
+router.get('/summary-style', verifyToken, async (req, res) => {
+
+  // Get user interest category details from database
+  // Expected request: 
+  // {
+  //   headers: {Authorization: Bearer token}, 
+  // }
+
+  // const userId:string | undefined | string[] = req.headers?.authorization;
+  const idToken: string = req.headers.authorization!;
+  const userId: string = await extractUidFromToken(idToken);
+
+  try {
+    const data = await getUserSummaryStyle(userId);
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to retrieve data' });
+  }
 });
 
-router.get('/preferences', verifyToken, (req, res) => {
-  // Fetch user preferences
+router.post('/summary-style', verifyToken, async (req, res) => {
+
+  // Save user interest category details to database
+  // Expected request: 
+  // {
+  //   headers: {Authorization: Bearer token}, 
+  //   body: {summaryStyle: "Captain Jack Sparrow from Pirates of the Carribean"}
+  // }
+  const idToken: string = req.headers.authorization!.split(' ')[1];
+  const summaryStyle:string = req.body.summaryStyle;
+
+  const userId: string = await extractUidFromToken(idToken);
+
+  try {
+    await setUserSummaryStyle(userId, summaryStyle);
+    res.json({ message: 'Data updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update data' });
+  }
+
 });
 
-router.put('/preferences', verifyToken, (req, res) => {
-  // Update user preferences
+router.get('/interests', verifyToken, async (req, res) => {
+
+  // Get user interest category details from database
+  // Expected request: 
+  // {
+  //   headers: {Authorization: Bearer token}, 
+  // }
+
+  const idToken: string = req.headers.authorization!;
+  const userId: string = await extractUidFromToken(idToken);
+
+  try {
+    const data = await getUserInterests(userId);
+    res.json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to retrieve data' });
+  }
 });
 
-router.put('/account', verifyToken, (req, res) => {
-  // Change email or password
+router.post('/interests', verifyToken, async (req, res) => {
+
+  // Save user interest category details to database
+  // Expected request: 
+  // {
+  //   headers: {Authorization: Bearer token}, 
+  //   body: interests:['topic 1','topic 2'..., 'topic n']
+  // }
+  const idToken: string = req.headers.authorization!.split(' ')[1];
+  const interests:string[] = req.body.interests;
+
+  const userId: string = await extractUidFromToken(idToken);
+
+  console.log("Got req");
+  // const uid = "VKdcxJ94BsVd8ehJtvHwqnzNYYk2"
+  // const interests = ["sports", "cricket", "bollywood", "google"];
+
+  try {
+    await setUserInterests(userId, interests);
+    res.json({ message: 'Data updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update data' });
+  }
+
 });
+  
 
 export default router;

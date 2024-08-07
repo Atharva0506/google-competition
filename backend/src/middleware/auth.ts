@@ -2,7 +2,7 @@
 
 import { Response, NextFunction } from 'express';
 import { Request } from "express-serve-static-core";
-import admin from '../config/firebaseAdmin';
+import { admin } from '../config/firebaseAdmin';
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   

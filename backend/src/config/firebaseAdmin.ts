@@ -7,10 +7,16 @@ import admin from 'firebase-admin';
 import serviceAccountCredentials from './firebaseServiceAccount.json';
 //firebaseServiceAccount.json is not commited and pushed due to security reasons.
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const serviceAccount = serviceAccountCredentials as admin.ServiceAccount;
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.FIREBASE_DB_URL!,
 });
 
-export default admin;
+const db = admin.database();
+
+export {admin, db};
