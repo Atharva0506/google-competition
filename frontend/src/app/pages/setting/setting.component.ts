@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { UserPreferenceComponent } from '../user-preference/user-preference.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 
 @Component({
   selector: 'app-setting',
   standalone: true,
-  imports: [RouterOutlet, UserPreferenceComponent],
+  imports: [RouterOutlet,RouterLink],
   templateUrl: './setting.component.html',
   styleUrl: './setting.component.css'
 })

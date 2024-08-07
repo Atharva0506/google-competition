@@ -1,11 +1,11 @@
 <div class="bg-transparent text-primary md:mx-4 md:my-3 md:bg-foreground rounded-xl p-4">
     <div class="border-b-2 border-primary pb-3 mb-4">
-        <h2 class="font-bold text-xl">Settings</h2>
+        <a routerLink="/setting" class="font-bold text-xl">Settings</a>
     </div>
     <div class=" py-4 md:flex md:flex-row md:h-screen">
         <div class="hidden md:flex md:flex-col border-r-2 border-primary md:pr-4 md:mr-4 pb-4 ">
-            <button
-                class="flex items-center gap-2 text-lg font-medium text-center hover:bg-primary hover:text-foreground transition px-2 py-2 rounded-lg mb-4 w-full">
+            <a routerLink="user-preference"
+                class="flex items-center gap-2 cursor-pointer text-lg font-medium text-center hover:bg-primary hover:text-foreground transition px-2 py-2 rounded-lg mb-4 w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -13,18 +13,20 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
                 <span class="whitespace-nowrap">User Preference</span>
-            </button>
+            </a>
 
-            <button
-                class="flex items-center gap-2 text-lg justify-start font-medium hover:bg-primary hover:text-foreground transition px-4 py-2 rounded-lg w-full">
+            <a routerLink="account"
+                class="flex items-center gap-2 text-lg justify-start cursor-pointer font-medium hover:bg-primary hover:text-foreground transition px-4 py-2 rounded-lg w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
                 <span>Account</span>
-            </button>
+            </a>
         </div>
-        <app-user-preference class="w-full"></app-user-preference>
+        <div class="w-full">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>

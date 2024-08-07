@@ -8,9 +8,12 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
     {path:'',component:HomeComponent},
-    {path:'setting',component:SettingComponent,children:[
-        {path:'account',component:AccountComponent},
-        {path:'user-preference',component:UserPreferenceComponent}
-    ]},
+    {path:'setting',component:SettingComponent,
+        children: [
+            { path: 'user-preference', component: UserPreferenceComponent },
+            { path: 'account', component: AccountComponent },
+            { path: '', redirectTo: 'user-preference', pathMatch: 'full' } 
+          ]
+    },
     {path:'**',component:NotFoundComponent}
 ];
