@@ -72,11 +72,15 @@ router.get('/summary-style', verifyToken, async (req, res) => {
   //   headers: {Authorization: Bearer token}, 
   // }
 
-  // const userId:string | undefined | string[] = req.headers?.authorization;
-  const idToken: string = req.headers.authorization!;
+  
+  const idToken: string = req.headers.authorization!.split(' ')[1];
   const userId: string = await extractUidFromToken(idToken);
-
+  
   try {
+    
+    // response for testing frontend:
+    // const data = "Captain Jack Sparrow from Pirates of the Carribean";
+
     const data = await getUserSummaryStyle(userId);
     res.json(data);
   } catch (error) {
@@ -121,6 +125,22 @@ router.get('/interests', verifyToken, async (req, res) => {
 
   try {
     const data = await getUserInterests(userId);
+    // response for testing frontend:
+    /*
+    const data = {
+      "countryCode": "DE",
+      "interests": [
+          "sports",
+          "soccer",
+          "table tennis",
+          "stock market",
+          "global news",
+          "anime",
+          "One Piece"
+      ]
+    }
+    */
+   
     res.json(data);
   } catch (error) {
     console.error(error);
