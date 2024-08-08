@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { SettingComponent } from './pages/setting/setting.component';
-import { HomeComponent } from './pages/home/home.component';
-import { UserPreferenceComponent } from './pages/user-preference/user-preference.component';
-import { AccountComponent } from './pages/account/account.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { SignupComponent } from './pages/signup/signup.component';
-import { LoginComponent } from './pages/login/login.component';
-import { DetailsComponent } from './pages/details/details.component';
+import { SettingComponent } from './components/setting/setting.component';
+import { HomeComponent } from './components/home/home.component';
+import { UserPreferenceComponent } from './components/user-preference/user-preference.component';
+import { AccountComponent } from './components/account/account.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { SignupComponent } from './components/signup/signup.component';
+import { LoginComponent } from './components/login/login.component';
+import { DetailsComponent } from './components/details/details.component';
 import { AuthGuard } from './auth.guard';
 
 
