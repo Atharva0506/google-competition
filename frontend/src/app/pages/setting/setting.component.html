@@ -2,10 +2,10 @@
     <div class="border-b-2 border-primary pb-3 mb-4">
         <a routerLink="/setting" class="font-bold text-xl">Settings</a>
     </div>
-    <div class=" py-4 md:flex md:flex-row md:h-screen">
-        <div class="hidden md:flex md:flex-col border-r-2 border-primary md:pr-4 md:mr-4 pb-4 ">
+    <div class="py-4 md:flex md:flex-row md:h-screen ">
+        <div class="hidden md:flex md:flex-col border-r-2 border-primary md:pr-4 md:mr-4 md:pb-4 ">
             <a routerLink="user-preference"
-                class="flex items-center gap-2 cursor-pointer text-lg font-medium text-center hover:bg-primary hover:text-foreground transition px-2 py-2 rounded-lg mb-4 w-full">
+                class="flex items-center gap-2 cursor-pointer text-lg font-medium text-center mb-3 hover:bg-primary hover:text-foreground transition px-2 py-2 rounded-lg  w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -16,7 +16,7 @@
             </a>
 
             <a routerLink="account"
-                class="flex items-center gap-2 text-lg justify-start cursor-pointer font-medium hover:bg-primary hover:text-foreground transition px-4 py-2 rounded-lg w-full">
+                class="flex items-center gap-2 text-lg justify-center cursor-pointer mb-3 font-medium hover:bg-primary hover:text-foreground transition px-auto py-2 rounded-lg w-full">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -24,6 +24,13 @@
                 </svg>
                 <span>Account</span>
             </a>
+            <button class="flex items-center gap-2 text-lg justify-center cursor-pointer font-medium hover:bg-primary hover:text-foreground transition px-4 py-2 rounded-lg w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                  </svg>
+                  
+                <span>Logout</span>
+            </button>
         </div>
         <div class="w-full">
             <router-outlet></router-outlet>
