@@ -12,10 +12,10 @@ import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
     {path:'',component:HomeComponent,canActivate:[AuthGuard]},
-    {path:'signup',component:SignupComponent},
-    {path:'login',component:LoginComponent},
+    {path:'signup',component:SignupComponent,canActivate:[AuthGuard]},
+    {path:'login',component:LoginComponent,canActivate:[AuthGuard]},
     {path:'details',component:DetailsComponent,canActivate:[AuthGuard]},
-    {path:'setting',component:SettingComponent,
+    {path:'setting',component:SettingComponent,canDeactivate:[AuthGuard],
         children: [
             { path: 'user-preference', component: UserPreferenceComponent },
             { path: 'account', component: AccountComponent },

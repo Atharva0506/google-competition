@@ -128,7 +128,9 @@
           <span>Account</span>
         </a>
         <div class="p-4">
-          <button class="w-full text-base border border-2-foreground text-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground">
+          <button
+          (click)="onLogOut()"
+          class="w-full text-base border border-2-foreground text-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground">
             Logout
           </button>
         </div>

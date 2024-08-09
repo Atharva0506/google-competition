@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "../navbar/navbar.component";
+import { AuthService } from '../../service/auth/auth.service';
 
 
 @Component({
@@ -11,5 +12,9 @@ import { NavbarComponent } from "../navbar/navbar.component";
   styleUrl: './setting.component.css'
 })
 export class SettingComponent {
+  constructor(private authService:AuthService){}
 
+  onLogOut(){
+    this.authService.signOut()
+  }
 }
