@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { Observable } from 'rxjs';
 
 @Injectable({
