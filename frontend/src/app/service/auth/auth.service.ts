@@ -18,8 +18,10 @@ export class AuthService {
         const user = userCredential.user;
         const token = await user.getIdToken();
         // Store the token in local storage
-        localStorage.setItem('token', token);
-        this.router.navigate(['/'])
+        localStorage.setItem('token', "Bearer " + token);
+      
+        localStorage.setItem('token',("Bearer " + token));
+        this.router.navigate(['/details'])
       })
       .catch((error) => {
         this.toastr.error( error.message);
@@ -34,7 +36,7 @@ export class AuthService {
       .then(async(userCredential) => {
         const user = userCredential.user;
         const token = await user.getIdToken();
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', ("Bearer " + token));
         this.router.navigate(['/details'])
       })
       .catch((error) => {
@@ -45,8 +47,9 @@ export class AuthService {
 // ============================= Sign IN  ====================================== //
   signInWithEmail(email: string, password: string): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.auth, email, password)
-      .then((userCredential) => {
-        localStorage.setItem('token', userCredential.user.refreshToken);
+      .then(async(userCredential) => {
+        const token = await userCredential.user.getIdToken();
+        localStorage.setItem('token',  ("Bearer " + token));
         this.toastr.success('Successfully logged in');
         this.router.navigate(['/'])
         return userCredential;
@@ -61,8 +64,9 @@ export class AuthService {
   signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(this.auth, provider)
-      .then((userCredential) => {
-        localStorage.setItem('token', userCredential.user.refreshToken);
+      .then(async (userCredential) => {
+        const token = await userCredential.user.getIdToken();
+        localStorage.setItem('token',  ("Bearer " + token));
         this.toastr.success('Successfully logged in with Google');
         this.router.navigate(['/'])
         return userCredential;

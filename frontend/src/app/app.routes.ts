@@ -9,19 +9,20 @@ import { LoginComponent } from './components/login/login.component';
 import { DetailsComponent } from './components/details/details.component';
 import { AuthGuard } from './auth.guard';
 
-
 export const routes: Routes = [
-    {path:'',component:HomeComponent,canActivate:[AuthGuard]},
-    {path:'signup',component:SignupComponent,canActivate:[AuthGuard]},
-    {path:'login',component:LoginComponent,canActivate:[AuthGuard]},
-    {path:'details',component:DetailsComponent,canActivate:[AuthGuard]},
-    {path:'setting',component:SettingComponent,canDeactivate:[AuthGuard],
+    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+    { path: 'signup', component: SignupComponent, canActivate: [AuthGuard] },
+    { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
+    { path: 'details', component: DetailsComponent, canActivate: [AuthGuard] },
+    {
+        path: 'setting',
+        component: SettingComponent,
+        canActivate: [AuthGuard], // Protect the parent route
         children: [
             { path: 'user-preference', component: UserPreferenceComponent },
             { path: 'account', component: AccountComponent },
-            { path: '', redirectTo: 'user-preference', pathMatch: 'full' } 
-          ]
-          ,canActivate:[AuthGuard]
+            { path: '', redirectTo: 'user-preference', pathMatch: 'full' }
+        ]
     },
-    {path:'**',component:NotFoundComponent}
+    { path: '**', component: NotFoundComponent }
 ];
