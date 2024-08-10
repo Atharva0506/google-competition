@@ -12,14 +12,17 @@ export class MainComponent {
   summary: string = '';
 
   constructor(private newsService: NewsService) { }
-
   ngOnInit(): void {
-    this.newsService.getNewsSummary().subscribe(data => {
-      this.summary = data;
-      console.log('Summary:', JSON.stringify(this.summary, null, 2));
-    }, error => {
-      console.error('Error fetching news summary:', error);
-    });
+    const token  = localStorage.getItem('token') || ''
+    this.newsService.getNewsSummary(token).subscribe(
+      data => {
+        this.summary = JSON.parse(data.summary);
+        console.log('Summary:', this.summary);
+      },
+      error => {
+        console.error('Error fetching news summary:', error);
+      }
+    );
   }
   
 }
