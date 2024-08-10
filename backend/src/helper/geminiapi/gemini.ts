@@ -14,7 +14,7 @@ const model = genAI.getGenerativeModel({
 
 export async function gemini(summaryStyle: string, links: string[]){
     
-    const prompt = `Given is an array containing links to news-articles. Summarise each article in the style of ${summaryStyle}: ${links}`;
+    const prompt = `Given is an array containing links to news-articles. Summarise each article in the style of ${summaryStyle}. URL Links: ${links}. Return a simple string.`;
     const result = await model.generateContent(prompt);
 
     return result.response.text();
