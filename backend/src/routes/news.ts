@@ -25,7 +25,7 @@ interface NewsArticle {
 
 const router: Router = Router();
 
-// const data = [
+// let data:NewsArticle[] = [
 //     {
 //         "title": "Goldman’s David Solomon predicts Fed won’t make emergency rate cuts",
 //         "description": "Goldman Sachs CEO David Solomon said the Federal Reserve won’t make emergency rate cuts before the central bankers meet in September, despite Monday's Wall Street meltdown.",
@@ -80,12 +80,10 @@ router.get("/news-articles/", verifyToken, async (req:Request, res:Response)=>{
     const searchString = userInfoData.interests.join(" OR ");
     console.log(searchString);
 
-    const response = await axios.get(`https://gnews.io/api/v4/search?q=${searchString}&in=title,description,content&lang=en&&nullable=image&sortby=publishedAt&max=1&apikey=${process.env.GNEWSAPIKEY}`);
-
-    console.log(response.data);
+    const numberOfArticles = 5; //How many articles to fetch
+    const response = await axios.get(`https://gnews.io/api/v4/search?q=${searchString}&in=title,description,content&lang=en&&nullable=image&sortby=publishedAt&max=${numberOfArticles}&apikey=${process.env.GNEWSAPIKEY}`);
 
     data = response.data.articles!;
-
     res.json(data);
 });
 
