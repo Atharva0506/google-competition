@@ -11,18 +11,30 @@ import { NewsService } from '../../service/news/news.service';
 export class MainComponent {
   summary: string = '';
 
-  constructor(private newsService: NewsService) { }
+  constructor(private newsService: NewsService) {}
+
   ngOnInit(): void {
-    const token  = localStorage.getItem('token') || ''
-    this.newsService.getNewsSummary(token).subscribe(
-      data => {
-        this.summary = JSON.parse(data.summary);
-        console.log('Summary:', this.summary);
+    const token = localStorage.getItem('token') || '';
+    
+    // First, getting news articles
+    this.newsService.getNewsArticles(token).subscribe(
+      articles => {
+        console.log('Articles fetched successfully:', articles);
+
+        // getting news summary
+        this.newsService.getNewsSummary(token).subscribe(
+          data => {
+            this.summary = JSON.parse(data.summary);
+            console.log('Summary:', this.summary);
+          },
+          error => {
+            console.error('Error fetching news summary:', error);
+          }
+        );
       },
       error => {
-        console.error('Error fetching news summary:', error);
+        console.error('Error fetching news articles:', error);
       }
     );
   }
-  
 }

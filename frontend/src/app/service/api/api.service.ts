@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class ApiService {
 
   private apiUrl = 'http://localhost:3000/api/users'; 
+  private apiUrlNews = 'http://localhost:3000/api/news'
 
   constructor(private http: HttpClient) { }
 // ====================================== POST =================================== //
@@ -33,4 +34,5 @@ export class ApiService {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     return this.http.get(`${this.apiUrl}/summary-style`, { headers });
   }
+  
 }

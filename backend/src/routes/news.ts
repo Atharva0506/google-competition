@@ -78,10 +78,12 @@ router.get("/news-articles/", verifyToken, async (req:Request, res:Response)=>{
     console.log(userInfoData);
 
     const searchString = userInfoData.interests.join(" OR ");
-    console.log(searchString);
+    const formattedSearchString = searchString.replace(/[^a-zA-Z ]/g, "");
+
+    console.log(formattedSearchString);
 
     const numberOfArticles = 5; //How many articles to fetch
-    const response = await axios.get(`https://gnews.io/api/v4/search?q=${searchString}&in=title,description,content&lang=en&&nullable=image&sortby=publishedAt&max=${numberOfArticles}&apikey=${process.env.GNEWSAPIKEY}`);
+    const response = await axios.get(`https://gnews.io/api/v4/search?q=${formattedSearchString}&in=title,description,content&lang=en&nullable=image&sortby=publishedAt&max=${numberOfArticles}&apikey=${process.env.GNEWSAPIKEY}`);
 
     data = response.data.articles!;
     res.json(data);
@@ -98,13 +100,13 @@ router.get("/news-summary/", verifyToken ,async (req:Request, res:Response)=>{
     if(data.length == 0){
         console.log("Data in news articles stored on server: " + data);
         res.json({"Error":"No news articles data found"});
+        return;
     }
 
     const links:string[] = getLinks(data);
     console.log("Sending this for getting summary: \nSummary style: " + summaryStyle + "\nLinks: " + links);
 
     const response:string = await gemini(summaryStyle, links);
-
     const finalResponse = {"summary": JSON.stringify(response)};
 
     res.json(finalResponse)

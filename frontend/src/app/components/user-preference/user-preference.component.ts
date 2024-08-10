@@ -38,14 +38,14 @@ export class UserPreferenceComponent {
   }
 
   updatePersonalDetails() {
-    this.apiService.setSummaryStyle(this.token, this.interests).subscribe({
+    this.apiService.setInterests(this.token, this.interests).subscribe({
       next: response => this.toastr.show('Personal details updated:'),
       error: err => this.toastr.error('Error updating personal details:'),
     });
   }
 
   updateSummaryStyle() {
-    this.apiService.setInterests(this.token, this.summaryStyle).subscribe({
+    this.apiService.setSummaryStyle(this.token, this.summaryStyle).subscribe({
       next: response => this.toastr.show('Summary style updated:'),
       error: err => this.toastr.error('Error updating summary style:'),
     });
