@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from "@google/generative-ai";
 
 interface Interests{
     interests: string[],
@@ -7,25 +7,39 @@ interface Interests{
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINIAPIKEY!);
 
-
 export async function gemini(summaryStyle: string, links: string[]){
     
+    const safetySettings: SafetySetting[] = [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+      ];
+
     const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
-        systemInstruction:`You are ${summaryStyle}. Your response must a single long string containing summary of all news articles, each separated by two new line characters.`,
+        systemInstruction:`You are ${summaryStyle}. Return simple plain text. Each article's summary, in the style of how your character, separated by two new line characters. No headings required. Each summary between 30 to 60 words. Be creative and act like your character but focus on summarizing the actual article content. (Strictly avoid and exclude innapropriate, offensive things, hate speech)`,
         generationConfig: { 
             responseMimeType: "text/plain",
-            temperature: 0.8,
-         }
+            temperature: 0.8
+         },
+         safetySettings
     });
 
-    const prompt = `Summarise each article's content in the given array of their URL: ${links}.`;
+    const prompt = `Summarise each article's content in the given array of their URL: ${links}`;
 
-    const result = await model.generateContent(prompt);
-    // const result = "Goldman Sachs CEO David Solomon predicts that the Federal Reserve will not make emergency rate cuts, even as the US economy faces challenges. Solomon believes that the Fed is likely to maintain its current course, even if there is a recession. Meanwhile, fresh renders of the Google Pixel 7 and Pro have been leaked, revealing a refined design with a more prominent camera bump and a unique color option for the Pro model. The Pixel 7 series is expected to be unveiled at Google's annual hardware event in October."
+    const result = await model.generateContent(
+        prompt
+    );
+    // const result = `Day 16 of the 2024 Olympics has been a blast, with Team GB bringing home some shiny medals.  We're talking about track cycling, hockey, and even some weightlifting action. Catch all the highlights on TV, because it's been a doozy. \n\nFusion research is reaching new levels of awesome.  Scientists are using it to fight cancer, power spaceships, and even provide clean energy for the planet. This isn't just science fiction, folks. This is the future.\n\nMacron's giving a shout-out to France's Olympic heroes.  The guy's a true patriot, celebrating the nation's athletes and their accomplishments. It's a motivational speech that'll make you want to grab your own medals. \n\n\Sky Sports is bringing you all the Premier League and EFL action, folks.  From goals to tackles, you won't miss a moment. Get ready for some serious football fun. \n\nThe Olympics are on, and you can catch all the action on your TV.  It's time to cheer on the world's best athletes, and it's gonna be epic.`
     console.log(result.response.text());
     
     return result.response.text();
+    // return result;
 }
 
 export async function interestsIdentification(userInput:string): Promise<Interests>{
