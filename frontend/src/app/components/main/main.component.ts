@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { NewsService } from '../../service/news/news.service';
+import { LoaderComponent } from '../../components/loader/loader.component';
+import { CommonModule } from '@angular/common';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [],
+  imports: [LoaderComponent,CommonModule,MarkdownComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent {
   summary: string = '';
-
+  loading: boolean = true;
   constructor(private newsService: NewsService) {}
 
   ngOnInit(): void {
@@ -25,6 +28,7 @@ export class MainComponent {
         this.newsService.getNewsSummary(token).subscribe(
           data => {
             this.summary = JSON.parse(data.summary);
+            this.loading = false;
             console.log('Summary:', this.summary);
           },
           error => {

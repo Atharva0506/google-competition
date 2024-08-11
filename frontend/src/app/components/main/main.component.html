@@ -11,8 +11,7 @@
         </div>
     </div>
     <div class="text-xl mx-0 mt-8 overflow-hidden text-clip md:mx-6 md:mt-8">
-        <p>
-            {{ summary }}
-    </p>
-     </div>
+        <app-loader *ngIf="loading"></app-loader>
+        <markdown *ngIf="!loading" [data]="summary"></markdown>
+    </div>
 </div>

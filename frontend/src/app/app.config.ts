@@ -9,6 +9,7 @@ import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import {getFirestore,provideFirestore} from '@angular/fire/firestore'
+import { provideMarkdown } from 'ngx-markdown';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideToastr(),
     provideHttpClient(),
-  
+    provideMarkdown()
   ]
 };
