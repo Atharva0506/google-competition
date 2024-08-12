@@ -18,3 +18,29 @@
 
 }
 
+.scrollbar-hide {
+    @apply overflow-hidden; 
+  }
+  
+  .scrollbar-custom {
+    @apply scrollbar-thin scrollbar-thumb-primary scrollbar-track-background;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 8px;
+    height: 4px;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-2xl border-2 border-background;
+  }
+  
+  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary;
+  }
+  
+

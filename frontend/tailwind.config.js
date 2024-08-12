@@ -13,6 +13,16 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar')({ 
+      nocompatible: true, 
+      options: { 
+        colors: {
+          thumb: 'var(--color-primary-text)',
+          track: 'var(--color-background)'
+        }
+      }
+    }),
+  ],
 }
 
