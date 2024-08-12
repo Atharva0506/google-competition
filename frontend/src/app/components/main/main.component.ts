@@ -27,7 +27,8 @@ export class MainComponent {
         // getting news summary
         this.newsService.getNewsSummary(token).subscribe(
           data => {
-            this.summary = JSON.parse(data.summary);
+            const processedSummary = this.preprocessText(data.summary);
+            this.summary = processedSummary;
             this.loading = false;
             console.log('Summary:', this.summary);
           },
@@ -40,5 +41,10 @@ export class MainComponent {
         console.error('Error fetching news articles:', error);
       }
     );
+  }
+
+  preprocessText(text: string): string {
+    // Using a more robust regular expression to match multiple newlines
+    return text.replace(/\n\n/g, '<br><br>');
   }
 }
