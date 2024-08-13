@@ -1,35 +1,27 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { Observable } from 'rxjs';
+import { inject } from '@angular/core';
+import { Router, Route, UrlSegment } from '@angular/router';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
+export function authGuard(
+  route: Route,
+  segments: UrlSegment[]
+): boolean {
+  const isBrowser = typeof window !== 'undefined';
+  const token = isBrowser ? localStorage.getItem('token') : null;
+  const url = '/' + segments.map(segment => segment.path).join('/');
 
-  constructor(private router: Router) {}
-
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    const token = localStorage.getItem('token');
-
-    // Redirect authenticated users from login/signup to home
-    if (token) {
-      if (state.url === '/login' || state.url === '/signup') {
-        this.router.navigate(['/']); // Redirect to home page
-        return false;
-      }
-      return true; // Allow access to protected routes
-    } else {
-      // Redirect unauthenticated users from protected routes to login
-      if (state.url !== '/login' && state.url !== '/signup') {
-        this.router.navigate(['/login']); // Redirect to login page
-        return false;
-      }
-      return true; // Allow access to login/signup pages
+  if (token) {
+    if (url === '/login' || url === '/signup') {
+      const router = inject(Router);
+      router.navigate(['/']); // Redirect to home page
+      return false;
     }
+    return true; // Allow access to protected routes
+  } else {
+    if (url !== '/login' && url !== '/signup') {
+      const router = inject(Router);
+      router.navigate(['/login']); // Redirect to login page
+      return false;
+    }
+    return true; // Allow access to login/signup pages
   }
 }

@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,signInWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
+import { User, Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,signInWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -9,7 +9,37 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth,private router:Router,private toastr:ToastrService) {}
+  constructor(private auth: Auth, private router: Router, private toastr: ToastrService) {
+    this.startTokenRefresh();
+  }
+
+  private tokenRefreshInterval: any;
+
+
+  private async startTokenRefresh() {
+    this.auth.onAuthStateChanged((user: User | null) => {
+      if (user) {
+        this.setTokenRefresh(user);
+      } else {
+        this.clearTokenRefresh();
+      }
+    });
+  }
+
+  private async setTokenRefresh(user: User) {
+    // Refresh token every 55 minutes (just before the 1-hour expiration)
+    this.tokenRefreshInterval = setInterval(async () => {
+      const token = await user.getIdToken(true);
+      localStorage.setItem('token', "Bearer " + token);
+    }, 55 * 60 * 1000);
+  }
+
+  private clearTokenRefresh() {
+    if (this.tokenRefreshInterval) {
+      clearInterval(this.tokenRefreshInterval);
+    }
+  }
+
 
   // ============================= Sign UP  ====================================== //
   signupWithEmail(email: string, password: string) {
@@ -19,16 +49,15 @@ export class AuthService {
         const token = await user.getIdToken();
         // Store the token in local storage
         localStorage.setItem('token', "Bearer " + token);
-      
-        localStorage.setItem('token',("Bearer " + token));
-        this.router.navigate(['/details'])
+        
+        this.router.navigate(['/details']);
       })
       .catch((error) => {
-        this.toastr.error( error.message);
+        this.toastr.error(error.message);
         throw error;
       });
   }
-
+  
   // Signup with Google
   signupWithGoogle() {
     const provider = new GoogleAuthProvider();

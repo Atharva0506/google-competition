@@ -46,6 +46,9 @@ export async function gemini(summaryStyle: string, links: string[]){
 
 export async function interestsIdentification(userInput:string): Promise<Interests>{
 
+    console.log("Identifying interests by requesting Gemini API... \nUser input string is: "+ userInput);
+    
+
     const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
         generationConfig: { 

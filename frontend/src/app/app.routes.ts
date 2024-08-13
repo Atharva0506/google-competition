@@ -7,19 +7,19 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { LoginComponent } from './components/login/login.component';
 import { DetailsComponent } from './components/details/details.component';
-import { AuthGuard } from './auth.guard';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-    { path: 'signup', component: SignupComponent, canActivate: [AuthGuard] },
-    { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
-    { path: 'details', component: DetailsComponent, canActivate: [AuthGuard] },
-    {path:'news-feed',component:SidebarComponent,canActivate:[AuthGuard]},
+    { path: '', component: HomeComponent, canMatch: [authGuard] },
+    { path: 'signup', component: SignupComponent, canMatch: [authGuard] },
+    { path: 'login', component: LoginComponent, canMatch: [authGuard] },
+    { path: 'details', component: DetailsComponent, canMatch: [authGuard] },
+    { path: 'news-feed', component: SidebarComponent, canMatch: [authGuard] },
     {
         path: 'setting',
         component: SettingComponent,
-        canActivate: [AuthGuard], // Protect the parent route
+        canMatch: [authGuard], // Protect the parent route
         children: [
             { path: 'user-preference', component: UserPreferenceComponent },
             { path: 'account', component: AccountComponent },

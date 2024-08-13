@@ -162,6 +162,8 @@ router.post('/interests', verifyToken, async (req, res) => {
   const userId: string = await extractUidFromToken(idToken);
 
   try {
+    console.log(`Now setting user info (interests)... \nuserId: ${userId}\ninterests string:${interests}`);
+    
     await setUserInterests(userId, interests);
     res.json({ message: 'Data updated successfully' });
   } catch (error) {
