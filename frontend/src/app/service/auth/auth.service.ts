@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { User, Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider,signInWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from '../token/token.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth, private router: Router, private toastr: ToastrService) {
+  constructor(private auth: Auth, private router: Router, private toastr: ToastrService,private tokenService : TokenService) {
     this.startTokenRefresh();
   }
 
@@ -48,7 +49,7 @@ export class AuthService {
         const user = userCredential.user;
         const token = await user.getIdToken();
         // Store the token in local storage
-        localStorage.setItem('token', "Bearer " + token);
+        this.tokenService.setToken(token)
         
         this.router.navigate(['/details']);
       })
@@ -65,7 +66,7 @@ export class AuthService {
       .then(async(userCredential) => {
         const user = userCredential.user;
         const token = await user.getIdToken();
-        localStorage.setItem('token', ("Bearer " + token));
+        this.tokenService.setToken(token)
         this.router.navigate(['/details'])
       })
       .catch((error) => {
@@ -78,7 +79,7 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password)
       .then(async(userCredential) => {
         const token = await userCredential.user.getIdToken();
-        localStorage.setItem('token',  ("Bearer " + token));
+        this.tokenService.setToken(token)
         this.toastr.success('Successfully logged in');
         this.router.navigate(['/'])
         return userCredential;
@@ -95,7 +96,7 @@ export class AuthService {
     return signInWithPopup(this.auth, provider)
       .then(async (userCredential) => {
         const token = await userCredential.user.getIdToken();
-        localStorage.setItem('token',  ("Bearer " + token));
+        this.tokenService.setToken(token)
         this.toastr.success('Successfully logged in with Google');
         this.router.navigate(['/'])
         return userCredential;
@@ -110,7 +111,7 @@ export class AuthService {
   signOut(): Promise<void> {
     return this.auth.signOut()
       .then(() => {
-        localStorage.removeItem('token');
+        this.tokenService.clearToken()
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']); 
       })

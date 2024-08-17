@@ -19,7 +19,7 @@ export const routes: Routes = [
     {
         path: 'setting',
         component: SettingComponent,
-        canMatch: [authGuard], // Protect the parent route
+        canMatch: [authGuard], 
         children: [
             { path: 'user-preference', component: UserPreferenceComponent },
             { path: 'account', component: AccountComponent },

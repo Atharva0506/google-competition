@@ -44,7 +44,6 @@ export class MainComponent {
   }
 
   preprocessText(text: string): string {
-    // Using a more robust regular expression to match multiple newlines
     return text.replace(/\n\n/g, '<br><br>');
   }
 }
