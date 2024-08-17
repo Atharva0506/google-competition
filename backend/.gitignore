@@ -46,3 +46,4 @@ firebaseServiceAccount.json
 
 # environment variables
 .env
+.vercel

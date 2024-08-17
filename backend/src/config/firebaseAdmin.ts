@@ -4,13 +4,13 @@
 //For all this we need to use service Account configuration
 
 import admin from 'firebase-admin';
-import serviceAccountCredentials from './firebaseServiceAccount.json';
+// import serviceAccountCredentials from './firebaseServiceAccount.json';
 //firebaseServiceAccount.json is not commited and pushed due to security reasons.
 
 import dotenv from "dotenv";
 dotenv.config();
 
-const serviceAccount = serviceAccountCredentials as admin.ServiceAccount;
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_CREDENTIALS as string);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

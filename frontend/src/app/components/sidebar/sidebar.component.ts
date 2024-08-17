@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { NewsService } from '../../service/news/news.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LoaderComponent } from '../loader/loader.component';
+import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
 
 
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [DatePipe,CommonModule,LoaderComponent],
+  imports: [DatePipe,CommonModule,LoaderComponent, FooterBtnComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })

@@ -1,16 +1,18 @@
-<div class="px-4 mx-3 mt-0 text-primary md:p-4 scrollbar-custom min-h-[85vh] overflow-y-auto">
-    <div class="flex justify-between items-center  border-b-2 border-primary p-3 ">
+<div class="px-4 mx-3 mt-0 text-primary md:p-4 min-h-[85vh]">
+    <div class="flex justify-between items-center border-b-2 border-primary p-3 md:overflow-auto scrollbar-custom">
         <div class="font-bold text-xl">All of it summarised - Just for you!</div>
-        <div class="md:flex items-center font-bold text-xl gap-2 hidden">
-            <span> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        <div class="hidden md:flex items-center font-bold text-xl gap-2">
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6 text-secondary fill-secondary">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                </svg> </span>
+                </svg>
+            </span>
             AI Summary
         </div>
     </div>
-    <div class="text-xl mx-0 mt-8 overflow-hidden text-clip md:mx-6 md:mt-8">
+    <div class="text-xl mx-0 mt-8 overflow-auto scrollbar-custom text-clip md:mx-6 md:mt-8" style="max-height: calc(85vh - 4rem);">
         <app-loader *ngIf="loading"></app-loader>
         <markdown *ngIf="!loading" [data]="summary"></markdown>
     </div>
