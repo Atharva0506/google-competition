@@ -1,25 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../../environments/environment.prod';
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private apiUrl = 'http://localhost:3000/api/users'; 
-  private apiUrlNews = 'http://localhost:3000/api/news'
+
 
   constructor(private http: HttpClient) { }
 // ====================================== POST =================================== //
   setSummaryStyle(token: string, summaryStyle: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/summary-style`, { summaryStyle }, {
+    return this.http.post(`${environment.apiUrlUser}/summary-style`, { summaryStyle }, {
       headers: { Authorization: `${token}` }
     });
   }
 
   setInterests(token: string, interests: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/interests`, { interests }, {
+    return this.http.post(`${environment.apiUrlUser}/interests`, { interests }, {
       headers: { Authorization: `${token}` }
     });
   }
@@ -27,12 +26,12 @@ export class ApiService {
   // ==================================== GET ==================================== //
   getinterests(token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
-    return this.http.get(`${this.apiUrl}/interests`, { headers });
+    return this.http.get(`${environment.apiUrlUser}/interests`, { headers });
   }
 
   getSummaryStyle(token: string): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
-    return this.http.get(`${this.apiUrl}/summary-style`, { headers });
+    return this.http.get(`${environment.apiUrlUser}/summary-style`, { headers });
   }
   
 }
