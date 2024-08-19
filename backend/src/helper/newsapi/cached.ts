@@ -25,8 +25,6 @@ const cachedValue = new TypedCache<number>();
 cachedValue.set("apiRequestsCount", 0);
 cachedValue.set("currentApiKey", 1);
 
-const MAX_REQUESTS_PER_API_KEY = 100;
-
 const resetRequestsCount = function () {
   cachedValue.set("apiRequestsCount", 0);
   cachedValue.set("currentApiKey", 1);
@@ -55,9 +53,11 @@ const incrementReqCount = async function () {
         const newReqCount = reqCount+1;
         cachedValue.set("apiRequestsCount", newReqCount);
 
-        if(reqCount>=MAX_REQUESTS_PER_API_KEY * 3){
-            cachedValue.set("currentApiKey", 3);
-        } else if(reqCount>=MAX_REQUESTS_PER_API_KEY * 2){
+        if(reqCount==199){
+          console.log("\n====== DETECTED RATE LIMIT FOR API KEY 1 --SWITCHING TO API KEY 3 ======\n");
+          cachedValue.set("currentApiKey", 3);
+        } else if(reqCount==99){
+            console.log("\n====== DETECTED RATE LIMIT FOR API KEY 1 --SWITCHING TO API KEY 2 ======\n");
             cachedValue.set("currentApiKey", 2);
         }
 
