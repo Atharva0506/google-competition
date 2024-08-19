@@ -4,6 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { LoaderComponent } from '../loader/loader.component';
 import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
 import { TokenService } from '../../service/token/token.service';
+import { NewsDataService } from '../../service/localData/news-data.service';
 
 
 
@@ -19,10 +20,13 @@ export class SidebarComponent implements OnInit {
   items: any[] = [];
   loading: boolean = true;
   token:string = ''
-  constructor(private newsService: NewsService,private tokenService: TokenService) { }
+  constructor(private newsService: NewsService,private tokenService: TokenService,private refreshService: NewsDataService) { }
  
   ngOnInit(): void {
     this.loadNewsArticles();
+    this.refreshService.refresh$.subscribe(() => {
+      this.loadNewsArticles();
+    });
   }
 
   loadNewsArticles(): void {
@@ -32,5 +36,5 @@ export class SidebarComponent implements OnInit {
       this.items = data;
     });
   }
- 
+
 }

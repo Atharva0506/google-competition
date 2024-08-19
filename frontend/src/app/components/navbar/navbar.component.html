@@ -69,7 +69,7 @@
         </li>
       </ul>
     </div>
-    <button class="mr-3 p-1 md:hidden"><a href="/" class="md:block text-primary">
+    <div class="mr-3 p-1 md:hidden"><button (click)="onRefresh()" class="md:block text-primary">
         <div class="flex border-solid border-primary border-2 rounded-md  p-1">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-6 h-5 fill-secondary text-secondary">
@@ -83,8 +83,8 @@
           </svg>
 
         </div>
-      </a>
-    </button>
+      </button>
+    </div>
   </div>
   <!-- Sidebar -->
   <div *ngIf="isSidebarOpen" class="fixed inset-0 z-40 flex md:hidden transition duration-1000 ease-in-out">

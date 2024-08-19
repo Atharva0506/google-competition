@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth/auth.service';
+import { NewsDataService } from '../../service/localData/news-data.service';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,7 @@ import { AuthService } from '../../service/auth/auth.service';
 export class NavbarComponent {
   isSidebarOpen = false;
 
-  constructor(private router: Router, private toaster: ToastrService,private authService:AuthService) {}
+  constructor(private router: Router, private toaster: ToastrService,private authService:AuthService,private newsData:NewsDataService) {}
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -24,7 +25,7 @@ export class NavbarComponent {
     this.authService.signOut()
   }
   onRefresh(){
-    // Here refresh logic  
-    console.log("Working")
+    this.newsData.clearNewsArticles();
+    this.newsData.triggerRefresh()
   }
 }

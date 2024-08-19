@@ -43,5 +43,6 @@ export class MainComponent {
   preprocessText(text: string): string {
     return text.replace(/\n\n/g, '<br><br>');
   }
+
 }
 

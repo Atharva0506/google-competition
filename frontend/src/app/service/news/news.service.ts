@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import {  Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment.prod';
 import { NewsDataService } from '../localData/news-data.service';
 
@@ -23,6 +23,7 @@ interface Article {
 export class NewsService {
   private articles: Article[] = [];
   private links: string[] = [];
+
   constructor(private http: HttpClient,private newsDataService: NewsDataService) {}
 
 
@@ -60,4 +61,5 @@ export class NewsService {
     const headers = new HttpHeaders().set('Authorization', `${token}`);
     return this.http.get<any[]>(`${environment.apiUrlNews}/news-summary/`, { headers })
   }
+ 
 }
