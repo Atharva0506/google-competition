@@ -3,6 +3,8 @@ import { NewsService } from '../../service/news/news.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LoaderComponent } from '../loader/loader.component';
 import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
+import { TokenService } from '../../service/token/token.service';
+
 
 
 
@@ -16,15 +18,18 @@ import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
 export class SidebarComponent implements OnInit {
   items: any[] = [];
   loading: boolean = true;
-
-  constructor(private newsService: NewsService) { }
-
+  token:string = ''
+  constructor(private newsService: NewsService,private tokenService: TokenService) { }
+ 
   ngOnInit(): void {
-    const token = localStorage.getItem("token") || ''
+    this.loadNewsArticles();
+  }
+
+  loadNewsArticles(): void {
+    const token = this.tokenService.getToken() || ''; 
     this.newsService.getNewsArticles(token).subscribe(data => {
       this.loading = false;
       this.items = data;
-
     });
   }
  

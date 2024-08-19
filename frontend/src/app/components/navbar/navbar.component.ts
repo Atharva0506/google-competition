@@ -23,4 +23,8 @@ export class NavbarComponent {
   onLogOut() {
     this.authService.signOut()
   }
+  onRefresh(){
+    // Here refresh logic  
+    console.log("Working")
+  }
 }

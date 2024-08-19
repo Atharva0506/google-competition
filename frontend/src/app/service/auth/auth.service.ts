@@ -4,13 +4,14 @@ import { User, Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuth
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from '../token/token.service';
+import { NewsDataService } from '../localData/news-data.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth, private router: Router, private toastr: ToastrService,private tokenService : TokenService) {
+  constructor(private auth: Auth, private router: Router, private toastr: ToastrService,private tokenService : TokenService,private newsDataService:NewsDataService) {
     this.startTokenRefresh();
   }
 
@@ -111,7 +112,8 @@ export class AuthService {
   signOut(): Promise<void> {
     return this.auth.signOut()
       .then(() => {
-        this.tokenService.clearToken()
+        this.tokenService.clearToken();
+        this.newsDataService.clearNewsArticles();
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']); 
       })

@@ -3,6 +3,7 @@ import { NewsService } from '../../service/news/news.service';
 import { LoaderComponent } from '../../components/loader/loader.component';
 import { CommonModule } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
+import { TokenService } from '../../service/token/token.service';
 
 @Component({
   selector: 'app-main',
@@ -14,23 +15,19 @@ import { MarkdownComponent } from 'ngx-markdown';
 export class MainComponent {
   summary: string = '';
   loading: boolean = true;
-  constructor(private newsService: NewsService) {}
+  constructor(private newsService: NewsService,private token:TokenService) {}
 
   ngOnInit(): void {
-    const token = localStorage.getItem('token') || '';
+    const token = this.token.getToken() || '';
     
-    // First, getting news articles
+  
     this.newsService.getNewsArticles(token).subscribe(
       articles => {
-        console.log('Articles fetched successfully:', articles);
-
-        // getting news summary
         this.newsService.getNewsSummary(token).subscribe(
           data => {
             const processedSummary = this.preprocessText(data.summary);
             this.summary = processedSummary;
             this.loading = false;
-            console.log('Summary:', this.summary);
           },
           error => {
             console.error('Error fetching news summary:', error);
@@ -47,3 +44,4 @@ export class MainComponent {
     return text.replace(/\n\n/g, '<br><br>');
   }
 }
+
