@@ -6,6 +6,9 @@ import { admin } from '../config/firebaseAdmin';
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   
+  console.log("\no-o-o-o-o-\tAUTHORISATION MIDDLEWARE CALLED\t-o-o-o-o-o-\n");
+  
+
   const idToken = req.headers.authorization?.split('Bearer ')[1];
 
   if (!idToken) {
