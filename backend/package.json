@@ -21,7 +21,8 @@
     "express": "^4.19.2",
     "firebase": "^10.12.4",
     "firebase-admin": "^12.3.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

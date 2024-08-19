@@ -1,7 +1,7 @@
 import express, {Express, NextFunction, Request, Response } from "express";
 import usersRouter from "./routes/users";
 import newsRouter from "./routes/news";
-import verifyToken from "./middleware/auth";
+import cronRouter from "./routes/cron";
 
 require('dotenv').config(); //Need this for environment variables - dotenv
 
@@ -26,6 +26,7 @@ app.use(express.json())
 
 app.use("/api/users",usersRouter);
 app.use("/api/news",newsRouter);
+app.use("/api/cron",cronRouter);
 
 app.get("/",(req,res)=>{
     res.send("Hello world!");
