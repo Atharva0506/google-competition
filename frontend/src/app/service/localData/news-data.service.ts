@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewsDataService {
   private key = "newsArticles"
-  private refreshTrigger = new BehaviorSubject<void>(undefined);
-  refresh$ = this.refreshTrigger.asObservable();
+  private summary  = "summary"
+
   constructor() { }
+  //  ================ News Articles  ================ //
   setNewsArticles(data: string): void {
     localStorage.setItem(this.key, data);
   }
@@ -21,8 +21,18 @@ export class NewsDataService {
   clearNewsArticles(): void {
     localStorage.removeItem(this.key);
   }
-     //  Refresh The Components after refresh button click 
-     triggerRefresh() {
-      this.refreshTrigger.next();
-    }
+//  =================== News summary  ================ //
+
+setNewsSummary(data: string): void {
+  localStorage.setItem(this.summary, data);
+}
+
+getNewsSummary(): string[] | null {
+  const data = localStorage.getItem(this.summary);
+  return data ? JSON.parse(data) : null;
+}
+
+clearNewsSummary(): void {
+  localStorage.removeItem(this.summary);
+}
 }

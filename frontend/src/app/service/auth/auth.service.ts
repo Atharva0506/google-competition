@@ -114,6 +114,7 @@ export class AuthService {
       .then(() => {
         this.tokenService.clearToken();
         this.newsDataService.clearNewsArticles();
+        this.newsDataService.clearNewsSummary();
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']); 
       })
