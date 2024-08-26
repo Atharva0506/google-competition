@@ -1,4 +1,4 @@
-<div class="px-4 mx-3 mt-0 text-primary md:p-4 min-h-[85vh]">
+<div class="px-4 mx-3 mt-0 text-primary md:p-4 min-h-[85vh] ">
     <div class="flex justify-between items-center border-b-2 border-primary p-3 md:overflow-auto scrollbar-custom">
         <div class="font-bold text-xl">All of it summarised - Just for you!</div>
         <div class="hidden md:flex items-center font-bold text-xl gap-2">
@@ -12,7 +12,7 @@
             AI Summary
         </div>
     </div>
-    <div class="text-xl mx-0 mt-8 overflow-auto scrollbar-custom text-clip md:mx-6 md:mt-8" style="max-height: calc(85vh - 4rem);">
+    <div class="text-xl mx-0 mt-6 overflow-auto scrollbar-custom text-clip md:mx-6 md:mt-8" style="max-height: calc(85vh - 10.5rem);">
         <app-loader *ngIf="loading"></app-loader>
         <markdown *ngIf="!loading" [data]="summary"></markdown>
     </div>
