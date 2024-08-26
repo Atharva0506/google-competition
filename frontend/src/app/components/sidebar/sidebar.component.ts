@@ -25,6 +25,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.loadNewsArticles()
       this.dataService.dataUpdated$.subscribe(() => {
+        this.loading = true
         this.loadNewsArticles();
       });
   }

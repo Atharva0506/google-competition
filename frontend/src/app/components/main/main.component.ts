@@ -22,6 +22,7 @@ export class MainComponent {
 
     this.loadSummary()
     this.dataService.dataUpdated$.subscribe(() => {
+      this.loading = true;
       this.loadSummary();
     });
 
