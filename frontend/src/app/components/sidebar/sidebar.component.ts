@@ -23,10 +23,11 @@ export class SidebarComponent implements OnInit {
   constructor(private newsService: NewsService,private tokenService: TokenService,private dataService: DataService) { }
  
   ngOnInit(): void {
+    
     if (!this.dataService.isDataFetched()) {
       this.loadNewsArticles();
     } else {
-      this.loading = false;
+      this.loadNewsArticles();
     }
 
     this.dataService.dataUpdated$.subscribe(() => {

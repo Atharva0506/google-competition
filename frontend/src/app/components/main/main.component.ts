@@ -17,23 +17,33 @@ export class MainComponent {
   summary: string = '';
   loading: boolean = true;
   constructor(private newsService: NewsService, private token: TokenService, private dataService: DataService) { }
-
+  private isFetching: boolean = false;
   ngOnInit(): void {
+    this.loadSummaryOnDataChange();
+  }
 
+  private loadSummaryOnDataChange(): void {
+    // Use distinctUntilChanged to ensure only distinct updates trigger loadSummary
     this.dataService.apiCallCompleted$.subscribe(() => {
-      this.loadSummary();
+      if (!this.isFetching) {
+        this.loadSummary();
+      }
     });
 
     this.dataService.dataUpdated$.subscribe(() => {
-      this.loading = true;
-      this.loadSummary();
+      if (!this.isFetching) {
+        this.loading = true;
+        this.loadSummary();
+      }
     });
-
   }
 
   loadSummary(): void {
     const token = this.token.getToken() || '';
-    
+
+    // Set fetching flag to true
+    this.isFetching = true;
+
     this.newsService.getNewsSummary(token).subscribe(
       data => {
         const processedSummary = this.preprocessText(data.summary);
@@ -42,9 +52,14 @@ export class MainComponent {
       },
       error => {
         console.error('Error fetching news summary:', error);
+      },
+      () => {
+        // Reset fetching flag after completion
+        this.isFetching = false;
       }
     );
   }
+
   preprocessText(text: string): string {
     return text.replace(/\n\n/g, '<br><br>');
   }
