@@ -10,17 +10,8 @@ import cors from "cors";
 const app: Express = express();
 
 app.use(cors({
-    origin: process.env.HOST_DOMAIN
+    origin: [process.env.HOST_DOMAIN!, process.env.LOCAL_HOST!]
 }));
-
-const allowCrossDomain = (req: Request, res:Response, next:NextFunction) => {
-    res.header(`Access-Control-Allow-Origin`, process.env.HOST_DOMAIN);
-    res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-    res.header(`Access-Control-Allow-Headers`, `text/plain`);
-    next();
-};
-
-app.use(allowCrossDomain);
 
 app.use(express.json())
 
