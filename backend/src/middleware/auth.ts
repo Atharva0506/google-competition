@@ -4,6 +4,8 @@ import { Response, NextFunction } from 'express';
 import { Request } from "express-serve-static-core";
 import { admin } from '../config/firebaseAdmin';
 
+
+
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   
   console.log("\no-o-o-o-o-\tAUTHORISATION MIDDLEWARE CALLED\t-o-o-o-o-o-\n");
@@ -17,7 +19,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    req.user = decodedToken;
+    req.user  = decodedToken;
     console.log("User verified successfully.");
     
     //Using custom type from src/types/custom.d.ts for req.user type
