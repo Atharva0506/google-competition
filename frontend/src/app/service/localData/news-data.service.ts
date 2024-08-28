@@ -1,8 +1,22 @@
 import { Injectable } from '@angular/core';
 
+interface Article {
+  title: string;
+  description: string;
+  content: string;
+  url: string;
+  image: string;
+  publishedAt: string;
+  source: {
+    name: string;
+    url: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class NewsDataService {
   private key = "newsArticles"
   private summary  = "summary"
@@ -13,9 +27,9 @@ export class NewsDataService {
     localStorage.setItem(this.key, data);
   }
 
-  getNewsArticles(): string[] | null {
+  getNewsArticles(): Article[] | null {
     const data = localStorage.getItem(this.key);
-    return data ? JSON.parse(data) : null;
+    return data ? JSON.parse(data) as Article[] : null;
   }
   
   clearNewsArticles(): void {

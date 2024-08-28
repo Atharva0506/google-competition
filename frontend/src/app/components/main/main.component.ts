@@ -20,7 +20,10 @@ export class MainComponent {
 
   ngOnInit(): void {
 
-    this.loadSummary()
+    this.dataService.apiCallCompleted$.subscribe(() => {
+      this.loadSummary();
+    });
+
     this.dataService.dataUpdated$.subscribe(() => {
       this.loading = true;
       this.loadSummary();
@@ -30,7 +33,7 @@ export class MainComponent {
 
   loadSummary(): void {
     const token = this.token.getToken() || '';
-
+    
     this.newsService.getNewsSummary(token).subscribe(
       data => {
         const processedSummary = this.preprocessText(data.summary);

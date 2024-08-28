@@ -23,11 +23,16 @@ export class SidebarComponent implements OnInit {
   constructor(private newsService: NewsService,private tokenService: TokenService,private dataService: DataService) { }
  
   ngOnInit(): void {
-    this.loadNewsArticles()
-      this.dataService.dataUpdated$.subscribe(() => {
-        this.loading = true
-        this.loadNewsArticles();
-      });
+    if (!this.dataService.isDataFetched()) {
+      this.loadNewsArticles();
+    } else {
+      this.loading = false;
+    }
+
+    this.dataService.dataUpdated$.subscribe(() => {
+      this.loading = true;
+      this.loadNewsArticles();
+    });
   }
 
   loadNewsArticles(): void {
@@ -36,6 +41,7 @@ export class SidebarComponent implements OnInit {
     this.newsService.getNewsArticles(token).subscribe(data => {
       this.loading = false;
       this.items = data;
+      this.dataService.emitApiCallCompleted();
     });
   }
 

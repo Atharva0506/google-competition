@@ -7,7 +7,7 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore'
 import { provideMarkdown } from 'ngx-markdown';
 export const appConfig: ApplicationConfig = {
@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
   provideFirestore(() => getFirestore()),
   provideAnimations(),
   provideToastr(),
-  provideHttpClient(),
+  provideHttpClient(withFetch()),
   provideMarkdown()
   ]
 };
