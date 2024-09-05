@@ -1,4 +1,3 @@
-// auth.service.ts
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, UserCredential, onAuthStateChanged, signOut, User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
@@ -14,20 +13,16 @@ export class AuthService {
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
   constructor(private router: Router, private toastr: ToastrService) {
-  
     onAuthStateChanged(this.firebaseAuth, (user) => {
       this.currentUserSubject.next(user);
       if (user) {
-        this.refreshToken();
+        this.saveUserToLocalStorage(user);
       } else {
-        if(this.isBrowser()){
-          localStorage.removeItem('firebaseToken');
-        }
+        this.removeFromLocalStorage('userDetails');
       }
     });
   }
 
-  // ============================= Sign UP  ====================================== //
   signupWithEmail(email: string, password: string): Promise<void> {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {
@@ -40,7 +35,6 @@ export class AuthService {
       });
   }
 
-  // Signup with Google
   signupWithGoogle(): Promise<void> {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(this.firebaseAuth, provider)
@@ -54,7 +48,6 @@ export class AuthService {
       });
   }
 
-  // ============================= Sign IN  ====================================== //
   signInWithEmail(email: string, password: string): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {
@@ -84,11 +77,10 @@ export class AuthService {
       });
   }
 
-  // ============================= Sign Out  ====================================== //
   signOut(): Promise<void> {
     return signOut(this.firebaseAuth)
       .then(() => {
-        localStorage.removeItem('firebaseToken'); // Clear token on logout
+        this.removeFromLocalStorage('userDetails');
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']);
       })
@@ -99,36 +91,43 @@ export class AuthService {
   }
 
   // ============================= Token Handling ====================================== //
-
-
-  private refreshToken(): void {
+  getFirebaseToken(): Promise<string | null> {
     const user = this.firebaseAuth.currentUser;
     if (user) {
-      user.getIdToken(true).then((token) => {
-        localStorage.setItem('firebaseToken',  ("Bearer " +token));
-      }).catch((error) => {
-        console.error('Error refreshing token:', error);
-        this.toastr.error('Error refreshing session. Please log in again.');
-        this.signOut();
+      return user.getIdToken().then(token => {
+        return "Bearer " + token; 
+      }).catch(error => {
+        console.error('Error getting token:', error);
+        return null;
       });
+    }
+    return Promise.resolve(null);
+  }
+
+  private async handleUserCredential(userCredential: UserCredential): Promise<void> {
+    const user = userCredential.user;
+    this.saveUserToLocalStorage(user);
+  }
+
+  getUserDetailsFromLocalStorage(): User | null {
+    const userDetails = this.getFromLocalStorage('userDetails');
+    return userDetails ? JSON.parse(userDetails) : null;
+  }
+
+  private saveUserToLocalStorage(user: User): void {
+    if (this.isBrowser()) {
+      const userDetails = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      };
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
     }
   }
 
-
-  private async handleUserCredential(userCredential: UserCredential): Promise<void> {
-    const token = await userCredential.user.getIdToken();
-   
-    localStorage.setItem('firebaseToken', ("Bearer " +token));
-  }
-
-  getFirebaseToken(): string | null {
-    return this.getFromLocalStorage('firebaseToken');
-  }
-
-  // Helper methods for handling localStorage with browser checks
-  private saveToLocalStorage(key: string, value: string): void {
+  private removeFromLocalStorage(key: string): void {
     if (this.isBrowser()) {
-      localStorage.setItem(key, value);
+      localStorage.removeItem(key);
     }
   }
 
@@ -139,13 +138,6 @@ export class AuthService {
     return null;
   }
 
-  private removeFromLocalStorage(key: string): void {
-    if (this.isBrowser()) {
-      localStorage.removeItem(key);
-    }
-  }
-
-  // Check if the code is running in a browser
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }

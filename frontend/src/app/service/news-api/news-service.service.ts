@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';  // Import operators
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../auth/auth.service';
 
 export interface NewsArticle {
   title: string;
@@ -28,27 +30,47 @@ export class NewsServiceService {
   private cachedSummary: string | null = null;
   private cachedNews: NewsArticle[] | null = null;
 
-  constructor(private http: HttpClient) {
-    console.log(environment.apiUrlNews);
+  constructor(private http: HttpClient, private authService: AuthService) {
+   
   }
 
+  private getAuthHeaders(): Observable<HttpHeaders> {
+    return from(this.authService.getFirebaseToken()).pipe(
+      switchMap(token => {
+        const headers = new HttpHeaders({
+          Authorization: `${token}`
+        });
+        return of(headers);
+      }),
+      catchError(() => {
+        // Handle token retrieval errors
+        return of(new HttpHeaders());  // Return empty headers or handle accordingly
+      })
+    );
+  }
 
   getNewsAndSummary(): Observable<NewsAndSummary> {
-    const idToken = localStorage.getItem('firebaseToken'); 
-    const headers = new HttpHeaders({
-      Authorization: `${idToken}`,
-    });
-
-    return this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary`, { headers });
+    return this.getAuthHeaders().pipe(
+      switchMap(headers => 
+        this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary`, { headers })
+      ),
+      catchError(error => {
+        console.error('Error fetching news and summary:', error);
+        return of({ summary: '', news: [] });  // Return empty data or handle accordingly
+      })
+    );
   }
 
   getDummyData(): Observable<NewsAndSummary> {
-    const idToken = localStorage.getItem('firebaseToken');
-    const headers = new HttpHeaders({
-      Authorization: `${idToken}`,
-    });
-
-    return this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary/dummy-data`, { headers });
+    return this.getAuthHeaders().pipe(
+      switchMap(headers =>
+        this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary/dummy-data`, { headers })
+      ),
+      catchError(error => {
+        console.error('Error fetching dummy data:', error);
+        return of({ summary: '', news: [] });  // Return empty data or handle accordingly
+      })
+    );
   }
 
   saveSummaryToLocalStorage(summary: string): void {
@@ -56,14 +78,12 @@ export class NewsServiceService {
     localStorage.setItem('summary', summary);
   }
 
-
   saveNewsArticlesToLocalStorage(news: NewsArticle[]): void {
     this.cachedNews = news;
     localStorage.setItem('newsArticles', JSON.stringify(news));
   }
 
   getSummary(): string | null {
-
     if (this.cachedSummary) {
       return this.cachedSummary;
     }
@@ -74,7 +94,6 @@ export class NewsServiceService {
     }
     return summary;
   }
-
 
   getNewsArticles(): NewsArticle[] | null {
     if (this.cachedNews) {
