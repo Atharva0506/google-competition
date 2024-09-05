@@ -1,27 +1,36 @@
+// auth-guard.service.ts
 import { inject } from '@angular/core';
 import { Router, Route, UrlSegment } from '@angular/router';
+import { AuthService } from './service/auth/auth.service';
 
 export function authGuard(
   route: Route,
   segments: UrlSegment[]
 ): boolean {
+  const router = inject(Router); 
+  const authService = inject(AuthService); 
+
+
   const isBrowser = typeof window !== 'undefined';
-  const token = isBrowser ? localStorage.getItem('token') : null;
+  const token = isBrowser ? authService.getFirebaseToken() : null;
+
+
   const url = '/' + segments.map(segment => segment.path).join('/');
 
+
   if (token) {
+   
     if (url === '/login' || url === '/signup') {
-      const router = inject(Router);
-      router.navigate(['/']); // Redirect to home page
+      router.navigate(['/']);
       return false;
     }
-    return true; // Allow access to protected routes
+    return true;
   } else {
+   
     if (url !== '/login' && url !== '/signup') {
-      const router = inject(Router);
-      router.navigate(['/login']); // Redirect to login page
+      router.navigate(['/login']); 
       return false;
     }
-    return true; // Allow access to login/signup pages
+    return true;
   }
 }

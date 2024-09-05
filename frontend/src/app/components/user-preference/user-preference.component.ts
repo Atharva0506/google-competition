@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 export class UserPreferenceComponent {
   interests: string = '';
   summaryStyle: string = '';
-  token: string = localStorage.getItem('token')||''; 
+  token: string = localStorage.getItem('firebaseToken')||''; 
 
   constructor(private apiService: ApiService,private toastr :ToastrService) {}
 

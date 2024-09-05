@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { NewsService } from '../../service/news/news.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LoaderComponent } from '../loader/loader.component';
 import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
-import { TokenService } from '../../service/token/token.service';
-import { DataService } from '../../service/DataUpdate/data-update.service';
-
+import { NewsServiceService } from '../../service/news-api/news-service.service';
 
 
 
@@ -19,31 +16,36 @@ import { DataService } from '../../service/DataUpdate/data-update.service';
 export class SidebarComponent implements OnInit {
   items: any[] = [];
   loading: boolean = true;
-  token:string = ''
-  constructor(private newsService: NewsService,private tokenService: TokenService,private dataService: DataService) { }
- 
-  ngOnInit(): void {
-    
-    if (!this.dataService.isDataFetched()) {
-      this.loadNewsArticles();
-    } else {
-      this.loadNewsArticles();
-    }
+  constructor(private newsService: NewsServiceService) { }
 
-    this.dataService.dataUpdated$.subscribe(() => {
-      this.loading = true;
-      this.loadNewsArticles();
-    });
+  ngOnInit(): void {
+    this.loadNewsArticles();
   }
 
   loadNewsArticles(): void {
-   
-    const token = this.tokenService.getToken() || ''; 
-    this.newsService.getNewsArticles(token).subscribe(data => {
+    const newsArticles = this.newsService.getNewsArticlesFromLocalStorage();
+    
+    if (newsArticles) {
+      this.items = newsArticles;
       this.loading = false;
-      this.items = data;
-      this.dataService.emitApiCallCompleted();
-    });
+    } else {
+      console.log("No news articles found in local storage.");
+      this.fetchAndStoreNews();
+    }
   }
 
+  fetchAndStoreNews(): void {
+    this.newsService.getDummyData().subscribe({
+      next: (response) => {
+        const articles = response.news;
+        this.newsService.saveNewsArticlesToLocalStorage(articles);
+        this.items = articles;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching news:', err);
+        this.loading = false;
+      }
+    });
+  }
 }
