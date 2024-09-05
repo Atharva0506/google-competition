@@ -2,49 +2,56 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LoaderComponent } from '../loader/loader.component';
 import { FooterBtnComponent } from '../footer-btn/footer-btn.component';
-import { NewsServiceService } from '../../service/news-api/news-service.service';
-
-
+import { NewsServiceService } from '../../service/news-api/news-service.service'; 
+import { NewsArticle } from '../../service/news-api/news-service.service'; 
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [DatePipe,CommonModule,LoaderComponent, FooterBtnComponent],
+  imports: [DatePipe, CommonModule, LoaderComponent, FooterBtnComponent],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.css'
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
-  items: any[] = [];
-  loading: boolean = true;
-  constructor(private newsService: NewsServiceService) { }
+  items: NewsArticle[] = []; 
+  loading: boolean = true; 
+
+  constructor(private newsService: NewsServiceService,private toastr:ToastrService) { }
 
   ngOnInit(): void {
-    this.loadNewsArticles();
+    this.loadNewsArticles(); 
   }
 
+ 
   loadNewsArticles(): void {
-    const newsArticles = this.newsService.getNewsArticlesFromLocalStorage();
+   
+    const cachedNews = this.newsService.getNewsArticles();
+    if (cachedNews && cachedNews.length > 0) {
     
-    if (newsArticles) {
-      this.items = newsArticles;
+      this.items = cachedNews;
       this.loading = false;
     } else {
-      console.log("No news articles found in local storage.");
+   
       this.fetchAndStoreNews();
     }
   }
 
+ 
   fetchAndStoreNews(): void {
-    this.newsService.getDummyData().subscribe({
+    this.loading = true; 
+    this.newsService.getNewsAndSummary().subscribe({
       next: (response) => {
         const articles = response.news;
+     
         this.newsService.saveNewsArticlesToLocalStorage(articles);
-        this.items = articles;
-        this.loading = false;
+        this.items = articles; 
+        this.loading = false; 
       },
       error: (err) => {
-        console.error('Error fetching news:', err);
-        this.loading = false;
+        this.toastr.error(err.message)
+        console.error('Error fetching news:', err); 
+        this.loading = true; 
       }
     });
   }

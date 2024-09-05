@@ -18,10 +18,11 @@ export class AuthService {
     onAuthStateChanged(this.firebaseAuth, (user) => {
       this.currentUserSubject.next(user);
       if (user) {
-      
         this.refreshToken();
       } else {
-        localStorage.removeItem('firebaseToken');
+        if(this.isBrowser()){
+          localStorage.removeItem('firebaseToken');
+        }
       }
     });
   }
@@ -104,7 +105,7 @@ export class AuthService {
     const user = this.firebaseAuth.currentUser;
     if (user) {
       user.getIdToken(true).then((token) => {
-        localStorage.setItem('firebaseToken', token);
+        localStorage.setItem('firebaseToken',  ("Bearer " +token));
       }).catch((error) => {
         console.error('Error refreshing token:', error);
         this.toastr.error('Error refreshing session. Please log in again.');
@@ -117,10 +118,35 @@ export class AuthService {
   private async handleUserCredential(userCredential: UserCredential): Promise<void> {
     const token = await userCredential.user.getIdToken();
    
-    localStorage.setItem('firebaseToken', ("Bearer  " +token));
+    localStorage.setItem('firebaseToken', ("Bearer " +token));
   }
 
   getFirebaseToken(): string | null {
-    return localStorage.getItem('firebaseToken');
+    return this.getFromLocalStorage('firebaseToken');
+  }
+
+  // Helper methods for handling localStorage with browser checks
+  private saveToLocalStorage(key: string, value: string): void {
+    if (this.isBrowser()) {
+      localStorage.setItem(key, value);
+    }
+  }
+
+  private getFromLocalStorage(key: string): string | null {
+    if (this.isBrowser()) {
+      return localStorage.getItem(key);
+    }
+    return null;
+  }
+
+  private removeFromLocalStorage(key: string): void {
+    if (this.isBrowser()) {
+      localStorage.removeItem(key);
+    }
+  }
+
+  // Check if the code is running in a browser
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 }
