@@ -1,37 +1,64 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../auth/auth.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
-
-  constructor(private http: HttpClient) { }
-// ====================================== POST =================================== //
-  setSummaryStyle(token: string, summaryStyle: string): Observable<any> {
-    return this.http.post(`${environment.apiUrlUser}/summary-style`, { summaryStyle }, {
-      headers: { Authorization: `${token}` }
-    });
+  // ====================================== POST =================================== //
+  setSummaryStyle(summaryStyle: string): Observable<any> {
+    return this.authService.getAuthHeaders().pipe(
+      switchMap(headers => 
+        this.http.post(`${environment.apiUrlUser}/summary-style`, { summaryStyle }, { headers })
+      ),
+      catchError(error => {
+        console.error('Error setting summary style:', error);
+        return of(null);  // Return null or handle error accordingly
+      })
+    );
   }
 
-  setInterests(token: string, interests: string): Observable<any> {
-    return this.http.post(`${environment.apiUrlUser}/interests`, { interests }, {
-      headers: { Authorization: `${token}` }
-    });
+  setInterests(interests: string): Observable<any> {
+    return this.authService.getAuthHeaders().pipe(
+      switchMap(headers => 
+        this.http.post(`${environment.apiUrlUser}/interests`, { interests }, { headers })
+      ),
+      catchError(error => {
+        console.error('Error setting interests:', error);
+        return of(null);  // Return null or handle error accordingly
+      })
+    );
   }
 
   // ==================================== GET ==================================== //
-  getinterests(token: string): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `${token}`);
-    return this.http.get(`${environment.apiUrlUser}/interests`, { headers });
+  getInterests(): Observable<any> {
+    return this.authService.getAuthHeaders().pipe(
+      switchMap(headers => 
+        this.http.get(`${environment.apiUrlUser}/interests`, { headers })
+      ),
+      catchError(error => {
+        console.error('Error fetching interests:', error);
+        return of([]);  // Return empty array or handle error accordingly
+      })
+    );
   }
 
-  getSummaryStyle(token: string): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `${token}`);
-    return this.http.get(`${environment.apiUrlUser}/summary-style`, { headers });
+  getSummaryStyle(): Observable<any> {
+    return this.authService.getAuthHeaders().pipe(
+      switchMap(headers => 
+        this.http.get(`${environment.apiUrlUser}/summary-style`, { headers })
+      ),
+      catchError(error => {
+        console.error('Error fetching summary style:', error);
+        return of(null);  // Return null or handle error accordingly
+      })
+    );
   }
-  
 }

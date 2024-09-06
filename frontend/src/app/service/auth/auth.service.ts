@@ -1,8 +1,20 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, UserCredential, onAuthStateChanged, signOut, User } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  UserCredential,
+  onAuthStateChanged,
+  signOut,
+  User
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +25,11 @@ export class AuthService {
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
   constructor(private router: Router, private toastr: ToastrService) {
+    this.initializeAuthStateListener();
+  }
+
+  private initializeAuthStateListener() {
+   
     onAuthStateChanged(this.firebaseAuth, (user) => {
       this.currentUserSubject.next(user);
       if (user) {
@@ -81,6 +98,9 @@ export class AuthService {
     return signOut(this.firebaseAuth)
       .then(() => {
         this.removeFromLocalStorage('userDetails');
+        localStorage.removeItem("newsArticles")
+        localStorage.removeItem("summary")
+        this.currentUserSubject.next(null); 
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']);
       })
@@ -92,20 +112,44 @@ export class AuthService {
 
   // ============================= Token Handling ====================================== //
   getFirebaseToken(): Promise<string | null> {
-    const user = this.firebaseAuth.currentUser;
+    const user = this.currentUserSubject.value; 
     if (user) {
       return user.getIdToken().then(token => {
-        return "Bearer " + token; 
+        if(token == null){
+          console.log("Token is Null :(")
+        }
+        return "Bearer " + token;
       }).catch(error => {
         console.error('Error getting token:', error);
         return null;
       });
     }
+    console.warn("No current user found."); 
     return Promise.resolve(null);
+  }
+
+  getAuthHeaders(): Observable<HttpHeaders> {
+    return from(this.getFirebaseToken()).pipe(
+      switchMap(token => {
+        if (!token) {
+          console.warn("Token is null, creating empty headers."); 
+          return of(new HttpHeaders()); 
+        }
+        const headers = new HttpHeaders({
+          Authorization: `${token}`
+        });
+        return of(headers);
+      }),
+      catchError(error => {
+        console.error("Error in getAuthHeaders:", error);
+        return of(new HttpHeaders()); 
+      })
+    );
   }
 
   private async handleUserCredential(userCredential: UserCredential): Promise<void> {
     const user = userCredential.user;
+    this.currentUserSubject.next(user); 
     this.saveUserToLocalStorage(user);
   }
 

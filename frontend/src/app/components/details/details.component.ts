@@ -3,14 +3,15 @@ import { ApiService } from '../../service/api/api.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-details',
   standalone: true,
   imports: [FormsModule],
   templateUrl: './details.component.html',
-  styleUrl: './details.component.css'
+  styleUrls: ['./details.component.css']
 })
 export class DetailsComponent {
   personalDetails: string = '';
@@ -19,21 +20,22 @@ export class DetailsComponent {
   constructor(private apiService: ApiService, private router: Router, private toastr: ToastrService) {}
 
   onSubmit() {
-    const token = localStorage.getItem('token') || ''; 
-    console.log("token: " + token);
-
-    this.apiService.setSummaryStyle(token, this.summaryStyle).pipe(
+    this.apiService.setSummaryStyle(this.summaryStyle).pipe(
       switchMap(response => {
-        this.toastr.show(response.message);
-        // Only after the first API call completes, make the second call
-        return this.apiService.setInterests(token, this.personalDetails);
+        this.toastr.success(response.message || 'Summary style updated successfully.');
+       
+        return this.apiService.setInterests(this.personalDetails);
+      }),
+      catchError(error => {
+        this.toastr.error('An error occurred while updating details');
+        console.error(error);
+        return of(null); 
       })
     ).subscribe(response => {
-      this.toastr.show(response.message);
-      this.router.navigate(['/']);
-    }, error => {
-      this.toastr.error('An error occurred while updating details');
-      console.error(error);
+      if (response) {
+        this.toastr.success(response.message || 'Personal details updated successfully.');
+        this.router.navigate(['/']);
+      }
     });
   }
 }

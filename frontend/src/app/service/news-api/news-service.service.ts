@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, from, of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';  // Import operators
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { switchMap, catchError, tap, shareReplay } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 
@@ -22,88 +22,97 @@ export interface NewsAndSummary {
   summary: string;
   news: NewsArticle[];
 }
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NewsServiceService {
-  private cachedSummary: string | null = null;
-  private cachedNews: NewsArticle[] | null = null;
+  private dataSubject = new BehaviorSubject<NewsAndSummary | null>(null);
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  private isFetching = false;
+
+  public data$ = this.dataSubject.asObservable();
+  public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) {
-   
+    this.loadData();
   }
 
-  private getAuthHeaders(): Observable<HttpHeaders> {
-    return from(this.authService.getFirebaseToken()).pipe(
-      switchMap(token => {
-        const headers = new HttpHeaders({
-          Authorization: `${token}`
-        });
-        return of(headers);
-      }),
-      catchError(() => {
-        // Handle token retrieval errors
-        return of(new HttpHeaders());  // Return empty headers or handle accordingly
-      })
-    );
+  loadData(): void {
+    // Emit the current loading state
+    this.loadingSubject.next(this.isFetching);
+
+    const cachedSummary = this.getSummary();
+    const cachedNews = this.getNewsArticles();
+
+    if (cachedSummary && cachedNews) {
+      this.dataSubject.next({ summary: cachedSummary, news: cachedNews });
+      this.loadingSubject.next(false); 
+    } else {
+      this.fetchData(); 
+    }
   }
 
-  getNewsAndSummary(): Observable<NewsAndSummary> {
-    return this.getAuthHeaders().pipe(
-      switchMap(headers => 
-        this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary`, { headers })
-      ),
-      catchError(error => {
-        console.error('Error fetching news and summary:', error);
-        return of({ summary: '', news: [] });  // Return empty data or handle accordingly
-      })
-    );
+  private fetchData(isForced: boolean = false): void {
+    if (this.isFetching && !isForced) return;
+    this.isFetching = true;
+    this.loadingSubject.next(true);
+
+    const apiUrl = `${environment.apiUrlNews}/news-and-summary/dummy-data`;
+
+    this.authService
+      .getAuthHeaders()
+      .pipe(
+        switchMap((headers) => this.http.get<NewsAndSummary>(apiUrl, { headers })),
+        tap((data) => {
+          this.saveSummaryToLocalStorage(data.summary);
+          this.saveNewsArticlesToLocalStorage(data.news);
+          this.dataSubject.next(data);
+          this.isFetching = false;
+          this.loadingSubject.next(false);
+        }),
+        catchError((error) => {
+          console.error('Error fetching news and summary:', error);
+          this.isFetching = false;
+          this.loadingSubject.next(false);
+          return of({ summary: '', news: [] });
+        }),
+        shareReplay(1)
+      )
+      .subscribe();
   }
 
-  getDummyData(): Observable<NewsAndSummary> {
-    return this.getAuthHeaders().pipe(
-      switchMap(headers =>
-        this.http.get<NewsAndSummary>(`${environment.apiUrlNews}/news-and-summary/dummy-data`, { headers })
-      ),
-      catchError(error => {
-        console.error('Error fetching dummy data:', error);
-        return of({ summary: '', news: [] });  // Return empty data or handle accordingly
-      })
-    );
+  public refreshData(): void {
+    this.fetchData(true); 
   }
 
-  saveSummaryToLocalStorage(summary: string): void {
-    this.cachedSummary = summary;
-    localStorage.setItem('summary', summary);
+  private saveSummaryToLocalStorage(summary: string): void {
+    if (this.isBrowser()) {
+      localStorage.setItem('summary', summary);
+    }
   }
 
-  saveNewsArticlesToLocalStorage(news: NewsArticle[]): void {
-    this.cachedNews = news;
-    localStorage.setItem('newsArticles', JSON.stringify(news));
+  private saveNewsArticlesToLocalStorage(news: NewsArticle[]): void {
+    if (this.isBrowser()) {
+      localStorage.setItem('newsArticles', JSON.stringify(news));
+    }
   }
 
   getSummary(): string | null {
-    if (this.cachedSummary) {
-      return this.cachedSummary;
+    if (this.isBrowser()) {
+      return localStorage.getItem('summary');
     }
-
-    const summary = localStorage.getItem('summary');
-    if (summary) {
-      this.cachedSummary = summary;
-    }
-    return summary;
+    return null;
   }
 
   getNewsArticles(): NewsArticle[] | null {
-    if (this.cachedNews) {
-      return this.cachedNews;
+    if (this.isBrowser()) {
+      const data = localStorage.getItem('newsArticles');
+      return data ? JSON.parse(data) : null;
     }
-   
-    const data = localStorage.getItem('newsArticles');
-    if (data) {
-      this.cachedNews = JSON.parse(data);
-    }
-    return this.cachedNews;
+    return null;
+  }
+
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
 }

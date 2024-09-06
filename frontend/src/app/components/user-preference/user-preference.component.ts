@@ -2,52 +2,65 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../service/api/api.service';
 import { ToastrService } from 'ngx-toastr';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-user-preference',
   standalone: true,
   imports: [FormsModule],
   templateUrl: './user-preference.component.html',
-  styleUrl: './user-preference.component.css'
+  styleUrls: ['./user-preference.component.css']
 })
 export class UserPreferenceComponent {
   interests: string = '';
   summaryStyle: string = '';
-  token: string = localStorage.getItem('firebaseToken')||''; 
 
-  constructor(private apiService: ApiService,private toastr :ToastrService) {}
+  constructor(private apiService: ApiService, private toastr: ToastrService) {}
 
   ngOnInit() {
     this.loadDetails();
   }
 
   loadDetails() {
-    this.apiService.getinterests(this.token).subscribe({
-      next: data => {
-        this.interests = data.interests || ''; 
-      },
-      error: err => this.toastr.error('Error fetching personal details:'),
+    this.apiService.getInterests().pipe(
+      catchError(err => {
+        this.toastr.error('Error fetching personal details:');
+        return of({ interests: '' });  // Return default value on error
+      })
+    ).subscribe(data => {
+      this.interests = data.interests || '';
     });
 
-    this.apiService.getSummaryStyle(this.token).subscribe({
-      next: data => {
-        this.summaryStyle = data || ''; 
-      },
-      error: err => this.toastr.error('Error fetching summary style:'),
+    this.apiService.getSummaryStyle().pipe(
+      catchError(err => {
+        this.toastr.error('Error fetching summary style:');
+        return of('');  // Return default value on error
+      })
+    ).subscribe(data => {
+      this.summaryStyle = data || '';
     });
   }
 
   updatePersonalDetails() {
-    this.apiService.setInterests(this.token, this.interests).subscribe({
-      next: response => this.toastr.show('Personal details updated:'),
-      error: err => this.toastr.error('Error updating personal details:'),
+    this.apiService.setInterests(this.interests).pipe(
+      catchError(err => {
+        this.toastr.error('Error updating personal details:');
+        return of(null);  // Return null or handle accordingly
+      })
+    ).subscribe(response => {
+      this.toastr.success('Personal details updated successfully.');
     });
   }
 
   updateSummaryStyle() {
-    this.apiService.setSummaryStyle(this.token, this.summaryStyle).subscribe({
-      next: response => this.toastr.show('Summary style updated:'),
-      error: err => this.toastr.error('Error updating summary style:'),
+    this.apiService.setSummaryStyle(this.summaryStyle).pipe(
+      catchError(err => {
+        this.toastr.error('Error updating summary style:');
+        return of(null);  // Return null or handle accordingly
+      })
+    ).subscribe(response => {
+      this.toastr.success('Summary style updated successfully.');
     });
   }
 }
