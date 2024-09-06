@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, catchError, tap, shareReplay } from 'rxjs/operators';
+import { switchMap, catchError, tap, shareReplay, finalize } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
+
 
 export interface NewsArticle {
   title: string;
@@ -52,37 +53,36 @@ export class NewsServiceService {
     }
   }
 
-  private fetchData(isForced: boolean = false): void {
-    if (this.isFetching && !isForced) return;
+  private fetchData(isForced: boolean = false): Observable<NewsAndSummary> {
+    if (this.isFetching && !isForced) return of({ summary: '', news: [] });
+  
     this.isFetching = true;
     this.loadingSubject.next(true);
-
+  
     const apiUrl = `${environment.apiUrlNews}/news-and-summary/dummy-data`;
-
-    this.authService
-      .getAuthHeaders()
-      .pipe(
-        switchMap((headers) => this.http.get<NewsAndSummary>(apiUrl, { headers })),
-        tap((data) => {
-          this.saveSummaryToLocalStorage(data.summary);
-          this.saveNewsArticlesToLocalStorage(data.news);
-          this.dataSubject.next(data);
-          this.isFetching = false;
-          this.loadingSubject.next(false);
-        }),
-        catchError((error) => {
-          console.error('Error fetching news and summary:', error);
-          this.isFetching = false;
-          this.loadingSubject.next(false);
-          return of({ summary: '', news: [] });
-        }),
-        shareReplay(1)
-      )
-      .subscribe();
+  
+    return this.authService.getAuthHeaders().pipe(
+      switchMap((headers) =>
+        this.http.get<NewsAndSummary>(apiUrl, { headers })
+      ),
+      tap((data) => {
+        this.saveSummaryToLocalStorage(data.summary);
+        this.saveNewsArticlesToLocalStorage(data.news);
+        this.dataSubject.next(data);
+      }),
+      catchError((error) => {
+        console.error('Error fetching news and summary:', error);
+        return of({ summary: '', news: [] }); 
+      }),
+      finalize(() => {
+        this.isFetching = false;
+        this.loadingSubject.next(false);
+      }),
+      shareReplay(1)
+    );
   }
-
-  public refreshData(): void {
-    this.fetchData(true); 
+  public refreshData(): Observable<NewsAndSummary> {
+    return this.fetchData(true); 
   }
 
   private saveSummaryToLocalStorage(summary: string): void {

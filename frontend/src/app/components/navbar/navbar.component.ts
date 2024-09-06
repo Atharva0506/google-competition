@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../service/auth/auth.service';
 import { NewsServiceService } from '../../service/news-api/news-service.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +14,7 @@ import { NewsServiceService } from '../../service/news-api/news-service.service'
 })
 export class NavbarComponent {
   isSidebarOpen = false;
+  loading = false;
 
   constructor(
     private router: Router,
@@ -31,7 +32,17 @@ export class NavbarComponent {
   }
 
   onRefresh() {
-    this.newsService.refreshData();
-    this.toaster.show('Data refreshed'); 
+    this.loading = true;
+    this.newsService.refreshData().subscribe({
+      next: () => {
+        // this.toaster.show('Data refreshed');
+      },
+      error: () => {
+        this.toaster.error('Failed to refresh data');
+      },
+      complete: () => {
+        this.loading = false;
+      }
+    });
   }
 }
