@@ -31,7 +31,7 @@ export class SidebarComponent implements OnInit {
       },
     });
 
-    // Trigger the initial load of data
+   
     this.newsService.loadData();
   }
 }

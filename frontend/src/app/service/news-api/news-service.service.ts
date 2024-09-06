@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { switchMap, catchError, tap, shareReplay, finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../auth/auth.service';
 
 
@@ -35,21 +35,39 @@ export class NewsServiceService {
   public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) {
-    this.loadData();
+    this.authService.currentUser$.subscribe(user => {
+      if (user) {
+        this.loadData(); 
+      } else {
+        this.dataSubject.next(null); 
+      }
+    });
   }
 
   loadData(): void {
-    // Emit the current loading state
     this.loadingSubject.next(this.isFetching);
-
+  
     const cachedSummary = this.getSummary();
     const cachedNews = this.getNewsArticles();
-
+  
     if (cachedSummary && cachedNews) {
       this.dataSubject.next({ summary: cachedSummary, news: cachedNews });
-      this.loadingSubject.next(false); 
+      this.loadingSubject.next(false);
     } else {
-      this.fetchData(); 
+      this.fetchData().subscribe({
+        next: (data) => {
+          this.saveSummaryToLocalStorage(data.summary);
+          this.saveNewsArticlesToLocalStorage(data.news);
+          this.dataSubject.next(data);
+        },
+        error: (err) => {
+          console.error('Error fetching news and summary:', err);
+          this.dataSubject.next({ summary: '', news: [] }); 
+        },
+        complete: () => {
+          this.loadingSubject.next(false);
+        }
+      });
     }
   }
 

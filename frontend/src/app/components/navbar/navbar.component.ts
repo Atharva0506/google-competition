@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent {
+export class NavbarComponent   {
   isSidebarOpen = false;
   loading = false;
 
@@ -35,7 +35,7 @@ export class NavbarComponent {
     this.loading = true;
     this.newsService.refreshData().subscribe({
       next: () => {
-        // this.toaster.show('Data refreshed');
+        this.toaster.show('Data refreshed');
       },
       error: () => {
         this.toaster.error('Failed to refresh data');

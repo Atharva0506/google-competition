@@ -23,15 +23,16 @@ export class AuthService {
   private firebaseAuth = inject(Auth);
   private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
+  private userLoggedInSubject = new BehaviorSubject<boolean>(false);
 
   constructor(private router: Router, private toastr: ToastrService) {
     this.initializeAuthStateListener();
   }
 
   private initializeAuthStateListener() {
-   
     onAuthStateChanged(this.firebaseAuth, (user) => {
       this.currentUserSubject.next(user);
+      this.userLoggedInSubject.next(!!user);
       if (user) {
         this.saveUserToLocalStorage(user);
       } else {
@@ -40,6 +41,9 @@ export class AuthService {
     });
   }
 
+  public getUserLoggedInStatus(): Observable<boolean> {
+    return this.userLoggedInSubject.asObservable();
+  }
   signupWithEmail(email: string, password: string): Promise<void> {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {

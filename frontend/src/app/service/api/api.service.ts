@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.prod';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class ApiService {
       ),
       catchError(error => {
         console.error('Error setting summary style:', error);
-        return of(null);  // Return null or handle error accordingly
+        return of(null);  
       })
     );
   }
@@ -32,7 +32,7 @@ export class ApiService {
       ),
       catchError(error => {
         console.error('Error setting interests:', error);
-        return of(null);  // Return null or handle error accordingly
+        return of(null);  
       })
     );
   }
@@ -45,7 +45,7 @@ export class ApiService {
       ),
       catchError(error => {
         console.error('Error fetching interests:', error);
-        return of([]);  // Return empty array or handle error accordingly
+        return of([]); 
       })
     );
   }
@@ -57,7 +57,7 @@ export class ApiService {
       ),
       catchError(error => {
         console.error('Error fetching summary style:', error);
-        return of(null);  // Return null or handle error accordingly
+        return of(null); 
       })
     );
   }
