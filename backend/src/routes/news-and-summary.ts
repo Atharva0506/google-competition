@@ -4,6 +4,7 @@ import { getUserInterests, getUserSummaryStyle } from "../helper/db/db";
 import extractUidFromToken from "../helper/auth/decodeToken";
 import verifyToken from "../middleware/auth";
 import getNews from "../helper/newsapi/getNews";
+import Bottleneck from "bottleneck";; //rate-limiting
 
 //============ Typescript stuff ==============
 
@@ -32,6 +33,18 @@ interface NewsAndSummary {
 
 const isNewsArticle = (value: NewsArticle[]): value is NewsArticle[] => !!value?.at(0)?.url;
 
+
+//============ Bottleneck (Rate limit) stuff ==============
+
+// GNEWS API Allows only 1 request per second.
+// Scope to improve more :- Rotate API keys. (Needs changes in caching behaviour).
+
+const limiter = new Bottleneck({
+    minTime: 1000, // 1 seconds between requests
+    maxConcurrent: 1 // Only allow one request at a time
+  });
+  
+
 const router: Router = Router();
 
 
@@ -56,7 +69,16 @@ router.get("/", verifyToken, async (req:Request, res:Response)=>{
     const formattedSearchString = searchString.replace(/[^a-zA-Z ]/g, "");
 
     try {
-        newsArticlesData = await getNews(formattedSearchString);
+
+        //Getting the news data from GNEWS API.
+        //Rate limit of 1 req per second with single concurrency.
+        
+        newsArticlesData = await limiter.schedule(() => {
+            console.log("Got multiple requests in one second, QUEUED request.");
+            
+            return getNews(formattedSearchString)
+        });
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Could Not fetch news data"});
