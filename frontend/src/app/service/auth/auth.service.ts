@@ -9,7 +9,12 @@ import {
   UserCredential,
   onAuthStateChanged,
   signOut,
-  User
+  User,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateEmail,
+  updatePassword,
+  sendPasswordResetEmail
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -24,7 +29,7 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   public currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
   private userLoggedInSubject = new BehaviorSubject<boolean>(false);
-
+  private signedUpFlagKey = 'hasSignedUp';
   constructor(private router: Router, private toastr: ToastrService) {
     this.initializeAuthStateListener();
   }
@@ -48,6 +53,7 @@ export class AuthService {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {
         await this.handleUserCredential(userCredential);
+        this.setSignedUpFlag(); // Set the flag when the user signs up
         this.router.navigate(['/details']);
       })
       .catch((error) => {
@@ -61,6 +67,7 @@ export class AuthService {
     return signInWithPopup(this.firebaseAuth, provider)
       .then(async (userCredential) => {
         await this.handleUserCredential(userCredential);
+        this.setSignedUpFlag(); // Set the flag when the user signs up
         this.router.navigate(['/details']);
       })
       .catch((error) => {
@@ -68,7 +75,14 @@ export class AuthService {
         throw error;
       });
   }
+  private setSignedUpFlag(): void {
+    localStorage.setItem(this.signedUpFlagKey, 'true');
+  }
 
+  // Method to check if the user has signed up
+  hasUserSignedUp(): boolean {
+    return localStorage.getItem(this.signedUpFlagKey) === 'true';
+  }
   signInWithEmail(email: string, password: string): Promise<UserCredential> {
     return signInWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {
@@ -98,12 +112,44 @@ export class AuthService {
       });
   }
 
+  updateEmail(newEmail: string): Promise<void> {
+    const user = this.currentUserSubject.value;
+    if (!user) return Promise.reject(new Error('User not logged in'));
+
+    return updateEmail(user, newEmail);
+  }
+
+  changePassword(oldPassword: string, newPassword: string): Promise<void> {
+    const user = this.currentUserSubject.value;
+    if (!user) return Promise.reject(new Error('User not logged in'));
+
+    // Re-authenticate the user before changing the password
+    const credential = EmailAuthProvider.credential(user.email || '', oldPassword);
+    return reauthenticateWithCredential(user, credential)
+      .then(() => {
+        // Use the updatePassword function with the user and new password
+        return updatePassword(user, newPassword);
+      })
+      .catch((error) => {
+        console.error('Error changing password:', error);
+        throw error;
+      });
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.firebaseAuth, email);
+    } catch (error:any) {
+      throw new Error(error.message);
+    }
+  }
   signOut(): Promise<void> {
     return signOut(this.firebaseAuth)
       .then(() => {
         this.removeFromLocalStorage('userDetails');
         localStorage.removeItem("newsArticles")
         localStorage.removeItem("summary")
+        localStorage.removeItem(this.signedUpFlagKey);
         this.currentUserSubject.next(null); 
         this.toastr.info('Successfully logged out');
         this.router.navigate(['/login']);

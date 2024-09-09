@@ -13,10 +13,18 @@ export function authGuard(
   const userDetails = isBrowser ? authService.getUserDetailsFromLocalStorage() : null;
 
   const url = '/' + segments.map(segment => segment.path).join('/');
+  if (url === '/forget-password') {
+    return true;
+  }
 
   if (userDetails) {
     // User is logged in
     if (url === '/login' || url === '/signup') {
+      router.navigate(['/']);
+      return false;
+    }
+    // Check if the user is trying to access /details without signing up
+    if (url === '/details' && !authService.hasUserSignedUp()) {
       router.navigate(['/']);
       return false;
     }

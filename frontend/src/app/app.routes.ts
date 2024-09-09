@@ -9,13 +9,17 @@ import { LoginComponent } from './components/login/login.component';
 import { DetailsComponent } from './components/details/details.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { authGuard } from './auth.guard';
+import { AboutComponent } from './components/about/about.component';
+import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent, canMatch: [authGuard] },
     { path: 'signup', component: SignupComponent, canMatch: [authGuard] },
     { path: 'login', component: LoginComponent, canMatch: [authGuard] },
+    {path:'forget-password',component:ForgetPasswordComponent},
     { path: 'details', component: DetailsComponent, canMatch: [authGuard] },
     { path: 'news-feed', component: SidebarComponent, canMatch: [authGuard] },
+    {path:'about',component:AboutComponent,canMatch:[authGuard]},
     {
         path: 'setting',
         component: SettingComponent,

@@ -26,7 +26,7 @@ export class UserPreferenceComponent {
     this.apiService.getInterests().pipe(
       catchError(err => {
         this.toastr.error('Error fetching personal details:');
-        return of({ interests: '' });  // Return default value on error
+        return of({ interests: '' });  
       })
     ).subscribe(data => {
       this.interests = data.interests || '';
@@ -35,7 +35,7 @@ export class UserPreferenceComponent {
     this.apiService.getSummaryStyle().pipe(
       catchError(err => {
         this.toastr.error('Error fetching summary style:');
-        return of('');  // Return default value on error
+        return of('');  
       })
     ).subscribe(data => {
       this.summaryStyle = data || '';
@@ -46,7 +46,7 @@ export class UserPreferenceComponent {
     this.apiService.setInterests(this.interests).pipe(
       catchError(err => {
         this.toastr.error('Error updating personal details:');
-        return of(null);  // Return null or handle accordingly
+        return of(null); 
       })
     ).subscribe(response => {
       this.toastr.success('Personal details updated successfully.');
@@ -57,7 +57,7 @@ export class UserPreferenceComponent {
     this.apiService.setSummaryStyle(this.summaryStyle).pipe(
       catchError(err => {
         this.toastr.error('Error updating summary style:');
-        return of(null);  // Return null or handle accordingly
+        return of(null);  
       })
     ).subscribe(response => {
       this.toastr.success('Summary style updated successfully.');

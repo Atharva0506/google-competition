@@ -1,35 +1,104 @@
-<div class="flex flex-col gap-8 mt-4 md:mt-0 w-full">
-    <div class="flex flex-col md:flex-row justify-between gap-4">
-        <div class="relative w-full">
-            <input id="email"
-                class="block w-full text-sm text-primary bg-transparent rounded-lg border p-4 h-12"
-                placeholder="test@gmail.com" />
-            <label for="email"
-                class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold">Email</label>
+<div class="container mx-auto p-6 flex flex-col gap-8">
+    <h1 class="text-3xl font-bold text-primary mb-4">Account Settings</h1>
+  
+    <form #emailForm="ngForm" class="flex flex-col md:flex-row justify-between gap-4">
+      <div class="relative w-full">
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="userEmail"
+          name="email"
+          required
+          email
+          #emailInput="ngModel"
+          class="block w-full text-sm text-primary bg-transparent border border-gray-300 focus:border-primary focus:ring-0 rounded-lg p-4 h-12"
+          [readonly]="!isEditingEmail"
+          placeholder="Email"
+          [ngClass]="{'border-red-500': emailInput.invalid && emailInput.touched}"
+        />
+        <label
+          for="email"
+          class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold"
+          >Email</label
+        >
+      
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="text-red-500 text-sm mt-1">
+          <span *ngIf="emailInput.errors && emailInput.errors['required']">Email is required.</span>
+          <span *ngIf="emailInput.errors && emailInput.errors['email']">Invalid email format.</span>
         </div>
-        <button
-            class="self-start text-base border border-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-2 md:mt-0">
-            Edit
-        </button>
-    </div>
-    <div class="flex flex-col md:flex-row justify-between gap-4">
-        <div class="relative w-full">
-            <input id="old-password"
-                class="block w-full text-sm text-primary bg-transparent rounded-lg border p-4 h-12"
-                placeholder="" />
-            <label for="old-password"
-                class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold">Old Password</label>
+      </div>
+      <button
+        type="button"
+        class="self-start text-base border border-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-2 md:mt-0"
+        (click)="toggleEmailEdit()"
+        [disabled]="emailForm.invalid && isEditingEmail"
+      >
+        {{ isEditingEmail ? 'Save' : 'Edit' }}
+      </button>
+    </form>
+  
+ 
+    <form #passwordForm="ngForm" class="flex flex-col md:flex-row justify-between gap-4">
+      <div class="relative w-full">
+        <input
+          id="old-password"
+          type="password"
+          [(ngModel)]="oldPassword"
+          name="oldPassword"
+          required
+          minlength="6"
+          #oldPasswordInput="ngModel"
+          class="block w-full text-sm text-primary bg-transparent border border-gray-300 focus:border-primary focus:ring-0 rounded-lg p-4 h-12"
+          placeholder=""
+          [ngClass]="{'border-red-500': oldPasswordInput.invalid && oldPasswordInput.touched}"
+        />
+        <label
+          for="old-password"
+          class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold"
+          >Old Password</label
+        >
+       
+        <div *ngIf="oldPasswordInput.invalid && oldPasswordInput.touched" class="text-red-500 text-sm mt-1">
+          <span *ngIf="oldPasswordInput.errors && oldPasswordInput.errors['required']">Old password is required.</span>
+          <span *ngIf="oldPasswordInput.errors && oldPasswordInput.errors['minlength']">
+            Password must be at least 6 characters long.
+          </span>
         </div>
-        <div class="relative w-full">
-            <input id="new-password"
-                class="block w-full text-sm text-primary bg-transparent rounded-lg border p-4 h-12"
-                placeholder="" />
-            <label for="new-password"
-                class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold">New Password</label>
+      </div>
+      <div class="relative w-full">
+        <input
+          id="new-password"
+          type="password"
+          [(ngModel)]="newPassword"
+          name="newPassword"
+          required
+          minlength="6"
+          #newPasswordInput="ngModel"
+          class="block w-full text-sm text-primary bg-transparent border border-gray-300 focus:border-primary focus:ring-0 rounded-lg p-4 h-12"
+          placeholder=""
+          [ngClass]="{'border-red-500': newPasswordInput.invalid && newPasswordInput.touched}"
+        />
+        <label
+          for="new-password"
+          class="absolute text-xl text-primary scale-75 -top-3 left-0 z-0 bg-foreground px-2 font-semibold"
+          >New Password</label
+        >
+       
+        <div *ngIf="newPasswordInput.invalid && newPasswordInput.touched" class="text-red-500 text-sm mt-1">
+          <span *ngIf="newPasswordInput.errors && newPasswordInput.errors['required']">New password is required.</span>
+          <span *ngIf="newPasswordInput.errors && newPasswordInput.errors['minlength']">
+            Password must be at least 6 characters long.
+          </span>
         </div>
-        <button
-            class="self-start text-base border border-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-2 md:mt-0">
-            Edit
-        </button>
-    </div>
-</div>
+      </div>
+      <button
+        type="submit"
+        class="self-start text-base border border-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-2 md:mt-0"
+        (click)="changePassword()"
+        [disabled]="passwordForm.invalid"
+      >
+        Change Password
+      </button>
+    </form>
+  </div>
+  
