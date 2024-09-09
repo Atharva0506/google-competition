@@ -18,8 +18,9 @@ export class AccountComponent {
   newPassword: string = '';
   isEditingEmail: boolean = false;
   isGoogleUser: boolean = false;
+  showDeleteModal: boolean = false;
 
-  constructor(private authService: AuthService,private toastr:ToastrService,private router:Router) {}
+  constructor(private authService: AuthService, private toastr: ToastrService, private router: Router) {}
 
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user) => {
@@ -51,5 +52,23 @@ export class AccountComponent {
       .catch((error) => {
         this.toastr.error('Error changing password:', error);
       });
+  }
+
+  openDeleteModal() {
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal = false;
+  }
+
+  deleteAccount() {
+    this.authService.deleteAccount().then(() => {
+      this.toastr.success('Account deleted successfully.');
+      this.router.navigate(['/login']);
+    }).catch((error) => {
+      this.toastr.error('Error deleting account:', error);
+    });
+    this.closeDeleteModal();
   }
 }

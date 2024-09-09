@@ -14,7 +14,8 @@ import {
   reauthenticateWithCredential,
   updateEmail,
   updatePassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  deleteUser
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -159,7 +160,13 @@ export class AuthService {
         throw error;
       });
   }
-
+  deleteAccount(): Promise<void> {
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      return deleteUser(user);
+    }
+    return Promise.reject('No user is currently signed in.');
+  }
   // ============================= Token Handling ====================================== //
   getFirebaseToken(): Promise<string | null> {
     const user = this.currentUserSubject.value; 
