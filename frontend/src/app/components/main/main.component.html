@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="text-xl mx-0 mt-6 overflow-auto scrollbar-custom text-clip md:mx-6 md:mt-8" style="max-height: calc(85vh - 10.5rem);">
-        <app-loader *ngIf="loading$ | async"></app-loader>
+        <app-loader *ngIf="loading$ | async" class="flex justify-center items-center mt-3"></app-loader>
         <markdown *ngIf="!(loading$ | async)" [data]="summary"></markdown>
     </div>
 </div>
