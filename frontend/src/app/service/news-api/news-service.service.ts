@@ -73,7 +73,7 @@ export class NewsServiceService {
 
   private fetchData(isForced: boolean = false): Observable<NewsAndSummary> {
     if (this.isFetching && !isForced) {
-      this.loadingSubject.next(false); // Ensure to update loading state here if skipping fetch
+      this.loadingSubject.next(false); 
       return of({ summary: '', news: [] });
     }
   
