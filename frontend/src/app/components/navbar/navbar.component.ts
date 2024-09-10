@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent   {
+export class NavbarComponent {
   isSidebarOpen = false;
   loading = false;
 
@@ -21,7 +21,7 @@ export class NavbarComponent   {
     private toaster: ToastrService,
     private authService: AuthService,
     private newsService: NewsServiceService
-  ) {}
+  ) { }
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -35,13 +35,16 @@ export class NavbarComponent   {
     this.loading = true;
     this.newsService.refreshData().subscribe({
       next: () => {
-        this.toaster.show('Data refreshed');
+        this.toaster.success('Data refreshed');
       },
       error: () => {
         this.toaster.error('Failed to refresh data');
       },
       complete: () => {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 2000); 
+      
       }
     });
   }

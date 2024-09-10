@@ -1,30 +1,25 @@
-/* Keyframes for blinking effect */
+.animate-blink {
+  animation: blink 1s infinite;
+}
+
+.animate-rotate {
+  animation: rotate 1s infinite;
+}
+
 @keyframes blink {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
+  0%, 100% {
+    opacity: 1;
   }
-  
+  50% {
+    opacity: 0;
+  }
+}
 
-  @keyframes rotate {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-  
-  
-  .blinking-svg {
-    animation: blink 1s infinite;
+  to {
+    transform: rotate(360deg);
   }
-  
-
-  .rotating-svg {
-    animation: rotate 2s linear infinite;
-  }
-  
+}
