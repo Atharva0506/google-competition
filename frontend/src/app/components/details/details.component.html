@@ -9,7 +9,9 @@
     </div>
     <div class="flex flex-col p-10 md:px-72 w-full">
       <div class="relative w-full mb-7">
-        <textarea rows="4" id="personal_details"
+        <textarea 
+                  autocomplete="on"
+                  rows="4" id="personal_details"
                   [(ngModel)]="personalDetails"
                   class="block w-full text-sm text-primary bg-transparent rounded-lg border p-5"
                   placeholder="I am a student. I am 24 years old. I live in New York City. I am studying Psychology. I like to read books, mainly fiction."></textarea>

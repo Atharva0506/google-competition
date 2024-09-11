@@ -5,6 +5,7 @@
   <form #emailForm="ngForm" class="flex flex-col md:flex-row justify-between gap-4">
     <div class="relative w-full">
       <input
+      autocomplete="email"
         id="email"
         type="email"
         [(ngModel)]="userEmail"
@@ -40,6 +41,7 @@
   <form #passwordForm="ngForm" class="flex flex-col md:flex-row justify-between gap-4">
     <div class="relative w-full">
       <input
+      autocomplete="current-password"
         id="old-password"
         type="password"
         [(ngModel)]="oldPassword"
@@ -63,6 +65,7 @@
     </div>
     <div class="relative w-full">
       <input
+      autocomplete="new-password"
         id="new-password"
         type="password"
         [(ngModel)]="newPassword"

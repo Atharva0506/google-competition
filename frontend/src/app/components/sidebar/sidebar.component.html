@@ -1,10 +1,11 @@
-<div class="flex flex-col px-4 mx-3 mt-0 md:m-4 text-primary ">
-  <div class="scrollbar-custom basis-[1] overflow-auto max-h-[80vh]">
+<div class="flex flex-col px-4 mx-3 mt-0 md:m-4 text-primary">
+  <div class="scrollbar-custom basis-[1] overflow-auto " style="max-height: calc(100vh - 10.5rem);"> 
     <div class="font-bold text-xl border-b-2 p-3 border-primary">News Feed</div>
-    <div class="flex flex-col mt-2 overflow-y-auto">
+    <div class="flex flex-col mt-2">
       <app-loader *ngIf="loading$ | async" class="flex justify-center items-center mt-3"></app-loader>
       <div *ngIf="!(loading$ | async)" class="overflow-hidden">
-        <a  *ngFor="let item of items; let i = index" [href]="item.url" target="_blank" class="w-full p-2 border-b-2 mt-2 border-primary">
+        <a *ngFor="let item of items; let i = index" [href]="item.url" target="_blank" 
+           class="w-full p-2 border-b-2 mt-2 border-primary">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6">
               <img [src]="item.image" alt="Icon" class="rounded-lg w-full h-full object-cover">
@@ -27,8 +28,7 @@
           </div>
         </a>
       </div>
-      
     </div>
   </div>
 </div>
-<app-footer-btn />
+<app-footer-btn></app-footer-btn>

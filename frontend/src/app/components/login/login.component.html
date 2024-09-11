@@ -6,6 +6,7 @@
       <div class="mb-4">
         <label for="email" class="block text-primary font-semibold mb-2">Email</label>
         <input
+        autocomplete="email"
           type="email"
           id="email"
           [(ngModel)]="email"
@@ -17,7 +18,7 @@
           placeholder="Enter your email"
           [ngClass]="{ 'border-red-500': emailInput.invalid && (emailInput.touched || loginForm.submitted) }"
         />
-        <!-- Email Errors -->
+     
         <div *ngIf="emailInput.invalid && (emailInput.touched || loginForm.submitted)" class="text-red-500 text-sm">
           <div *ngIf="emailInput.errors?.['required']">Email is required.</div>
           <div *ngIf="emailInput.errors?.['email']">Please enter a valid email address.</div>
@@ -28,6 +29,7 @@
       <div class="mb-6">
         <label for="password" class="block text-primary font-semibold mb-2">Password</label>
         <input
+        autocomplete="current-password"
           type="password"
           id="password"
           [(ngModel)]="password"
