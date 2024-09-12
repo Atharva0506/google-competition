@@ -11,7 +11,10 @@ import cors from "cors";
 const app: Express = express();
 
 app.use(cors({
-    origin: [process.env.HOST_DOMAIN!, process.env.LOCAL_HOST!]
+    origin: [process.env.HOST_DOMAIN!, process.env.LOCAL_HOST!],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }));
 
 app.use(express.json())
