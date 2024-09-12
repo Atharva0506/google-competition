@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, catchError, tap, shareReplay, finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment.prod';
+import { switchMap, catchError, tap, finalize, shareReplay } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
-
 
 export interface NewsArticle {
   title: string;
@@ -23,6 +22,7 @@ export interface NewsAndSummary {
   summary: string;
   news: NewsArticle[];
 }
+
 @Injectable({
   providedIn: 'root',
 })
@@ -37,22 +37,24 @@ export class NewsServiceService {
   constructor(private http: HttpClient, private authService: AuthService) {
     this.authService.currentUser$.subscribe(user => {
       if (user) {
-        this.loadData(); 
+        this.loadData();
       } else {
-        this.dataSubject.next(null); 
+        this.dataSubject.next(null);
       }
     });
   }
 
   loadData(): void {
-    this.loadingSubject.next(true); 
+    if (this.isFetching) return;
+
+    this.loadingSubject.next(true);
 
     const cachedSummary = this.getSummary();
     const cachedNews = this.getNewsArticles();
-  
+
     if (cachedSummary && cachedNews) {
       this.dataSubject.next({ summary: cachedSummary, news: cachedNews });
-      this.loadingSubject.next(false); 
+      this.loadingSubject.next(false);
     } else {
       this.fetchData().subscribe({
         next: (data) => {
@@ -62,30 +64,26 @@ export class NewsServiceService {
         },
         error: (err) => {
           console.error('Error fetching news and summary:', err);
-          this.dataSubject.next({ summary: '', news: [] }); 
+          this.dataSubject.next({ summary: '', news: [] });
         },
         complete: () => {
-          this.loadingSubject.next(false); 
-        }
+          this.loadingSubject.next(false);
+        },
       });
     }
   }
 
   private fetchData(isForced: boolean = false): Observable<NewsAndSummary> {
     if (this.isFetching && !isForced) {
-      this.loadingSubject.next(false); 
       return of({ summary: '', news: [] });
     }
-  
+
     this.isFetching = true;
-    this.loadingSubject.next(true);
-  
+    this.loadingSubject.next(true)
     const apiUrl = `${environment.apiUrlNews}/news-and-summary/dummy-data`;
-  
+
     return this.authService.getAuthHeaders().pipe(
-      switchMap((headers) =>
-        this.http.get<NewsAndSummary>(apiUrl, { headers })
-      ),
+      switchMap((headers) => this.http.get<NewsAndSummary>(apiUrl, { headers })),
       tap((data) => {
         this.saveSummaryToLocalStorage(data.summary);
         this.saveNewsArticlesToLocalStorage(data.news);
@@ -102,8 +100,9 @@ export class NewsServiceService {
       shareReplay(1)
     );
   }
+
   public refreshData(): Observable<NewsAndSummary> {
-    return this.fetchData(true); 
+    return this.fetchData(true);
   }
 
   private saveSummaryToLocalStorage(summary: string): void {

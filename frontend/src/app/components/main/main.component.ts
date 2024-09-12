@@ -18,6 +18,7 @@ export class MainComponent implements OnInit, OnDestroy {
   summary: string = '';
   loading$: Observable<boolean>;
   private authSubscription: Subscription | null = null;
+  private loadingSubscription: Subscription | null = null; // Add this line
 
   constructor(
     private newsService: NewsServiceService,
@@ -28,18 +29,27 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Subscribe to loading$ to log its value
+    this.loadingSubscription = this.loading$.subscribe(loading => {
+      console.log('Loading state:', loading);
+    });
+
+    // Subscribe to currentUser$ to load data
     this.authSubscription = this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.newsService.loadData();
       }
     });
-  
+
     this.loadSummary();
   }
 
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
+    }
+    if (this.loadingSubscription) {
+      this.loadingSubscription.unsubscribe(); // Ensure you unsubscribe here
     }
   }
 
