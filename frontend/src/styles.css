@@ -5,10 +5,10 @@
 @tailwind utilities;
 @layer base { 
     :root {
-        --color-background: #242424;
-        --color-foreground: #373737;
-        --color-primary-text: #C3C3C3;
-        --color-secondary-text: #C09437;
+      --color-background: #242424;
+      --color-foreground: #373737;
+      --color-primary-text: #C3C3C3;
+      --color-secondary-text: #C09437;
     }
     html {
         font-family: "Inter", sans-serif;

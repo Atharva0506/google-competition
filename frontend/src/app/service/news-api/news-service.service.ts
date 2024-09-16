@@ -80,7 +80,7 @@ export class NewsServiceService {
 
     this.isFetching = true;
     this.loadingSubject.next(true)
-    const apiUrl = `${environment.apiUrlNews}/news-and-summary/dummy-data`;
+    const apiUrl = `${environment.apiUrlNews}/news-and-summary`;
 
     return this.authService.getAuthHeaders().pipe(
       switchMap((headers) => this.http.get<NewsAndSummary>(apiUrl, { headers })),
