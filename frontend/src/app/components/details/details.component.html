@@ -1,34 +1,44 @@
-<div class="bg-transparent text-primary md:my-3 md:mx-4 md:bg-foreground rounded-xl px-4 flex flex-col items-center justify-center max-h-full p-4">
-  <div class="border-b-2 w-full border-primary pb-3 mb-4 mx-4">
-    <a routerLink="/setting" class="font-bold text-xl block">Add your details</a>
+<div class="text-primary my-3 mx-auto bg-transparent rounded-xl p-4 md:p-6 flex flex-col items-center justify-start h-screen max-h-screen w-full max-w-full md:max-w-3xl overflow-hidden">
+  <div class="border-b-2 w-full border-primary pb-3 mb-6 text-center">
+    <a routerLink="/setting" class="font-bold text-lg md:text-xl block">Add your details</a>
   </div>
-  <div class="flex flex-col h-full justify-center items-center mx-auto my-2">
-    <div class="text-lg md:px-72 text-left">
+
+
+  <div class="flex flex-col h-full justify-start items-center mx-auto w-full overflow-y-auto">
+    <!-- Intro Text -->
+    <div class="text-base md:text-lg px-2 md:px-12 text-left mb-6">
       <p>Please provide the following details so that we can curate personalized news articles based on your preferences.</p>
       <p>The more you share, the more personalized it gets. You choose what you want to share.</p>
     </div>
-    <div class="flex flex-col p-10 md:px-72 w-full">
-      <div class="relative w-full mb-7">
+
+   
+    <div class="flex flex-col p-2 md:p-4 md:px-12 w-full">
+      <!-- Personal Details Textarea -->
+      <div class="relative w-full mb-6">
         <textarea 
                   autocomplete="on"
                   rows="4" id="personal_details"
                   [(ngModel)]="personalDetails"
-                  class="block w-full text-sm text-primary bg-transparent rounded-lg border p-5"
+                  class="block w-full text-sm text-primary bg-transparent rounded-lg border border-primary p-3 md:p-4 resize-none"
                   placeholder="I am a student. I am 24 years old. I live in New York City. I am studying Psychology. I like to read books, mainly fiction."></textarea>
         <label for="personal_details"
-               class="absolute z-0 text-xl text-primary scale-75 -top-3 -left-3 bg-foreground px-2 font-semibold">Personal Details:</label>
+               class="absolute z-10 text-base md:text-lg text-primary scale-75 -top-3 -left-3 bg-foreground px-1 md:px-2 font-semibold">Personal Details:</label>
       </div>
-      <div class="relative w-full">
+
+    
+      <div class="relative w-full mb-6">
         <textarea rows="4" id="summary_style"
                   [(ngModel)]="summaryStyle"
-                  class="block w-full text-sm text-primary bg-transparent rounded-lg border p-5"
+                  class="block w-full text-sm text-primary bg-transparent rounded-lg border border-primary p-3 md:p-4 resize-none"
                   placeholder="Funny but accurate."></textarea>
         <label for="summary_style"
-               class="absolute z-0 text-xl text-primary scale-75 -top-3 -left-5 bg-foreground px-2 font-semibold">Summary style preference:</label>
+               class="absolute z-10 text-base md:text-lg text-primary scale-75 -top-3 -left-3 bg-foreground px-1 md:px-2 font-semibold">Summary Style Preference:</label>
       </div>
-      <div class="flex justify-end items-center">
+
+    
+      <div class="flex justify-end items-center w-full">
         <button (click)="onSubmit()"
-          class="text-base border border-primary px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-2 md:mt-10">
+          class="text-sm md:text-base border border-primary px-4 md:px-6 py-2 rounded-lg transition hover:bg-primary hover:text-foreground mt-4 md:mt-6">
           Submit
         </button>
       </div>

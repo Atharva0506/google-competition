@@ -207,8 +207,10 @@ router.get("/dummy-data", verifyToken, async (req:Request, res:Response)=>{
         "summary":response,
         "news":newsArticlesData
     }
-    
-    res.json(data);
+    // Jsut For testing 
+    setTimeout(()=>{
+        res.json(data);
+    },3000)
 });
 
 export default router;

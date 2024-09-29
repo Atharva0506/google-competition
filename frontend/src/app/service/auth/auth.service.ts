@@ -54,7 +54,7 @@ export class AuthService {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password)
       .then(async (userCredential) => {
         await this.handleUserCredential(userCredential);
-        this.setSignedUpFlag(); // Set the flag when the user signs up
+        this.setSignedUpFlag(); 
         this.router.navigate(['/details']);
       })
       .catch((error) => {
@@ -68,7 +68,7 @@ export class AuthService {
     return signInWithPopup(this.firebaseAuth, provider)
       .then(async (userCredential) => {
         await this.handleUserCredential(userCredential);
-        this.setSignedUpFlag(); // Set the flag when the user signs up
+        this.setSignedUpFlag(); 
         this.router.navigate(['/details']);
       })
       .catch((error) => {
@@ -104,7 +104,7 @@ export class AuthService {
       .then(async (userCredential) => {
         await this.handleUserCredential(userCredential);
         this.toastr.success('Successfully logged in with Google');
-        this.router.navigate(['/']);
+        this.router.navigate(['/details']);
         return userCredential;
       })
       .catch((error) => {

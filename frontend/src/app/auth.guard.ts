@@ -32,7 +32,7 @@ export function authGuard(
   } else {
     // User is not logged in
     if (url !== '/login' && url !== '/signup') {
-      router.navigate(['/login']);
+      router.navigate(['/signup']);
       return false;
     }
     return true;
