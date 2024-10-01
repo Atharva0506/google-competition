@@ -58,10 +58,16 @@ export class AuthService {
         this.router.navigate(['/details']);
       })
       .catch((error) => {
-        this.toastr.error(error.message);
+        if (error.code === 'auth/email-already-in-use') {
+          this.toastr.error('Email is already in use. Redirecting to login...');
+          this.router.navigate(['/login']); 
+        } else {
+          this.toastr.error(error.message);
+        }
         throw error;
       });
   }
+  
 
   signupWithGoogle(): Promise<void> {
     const provider = new GoogleAuthProvider();
@@ -93,11 +99,12 @@ export class AuthService {
         return userCredential;
       })
       .catch((error) => {
-        this.toastr.error(error.message);
+        const errorMessage = this.handleAuthError(error);
+        this.toastr.error(errorMessage);
         throw error;
       });
   }
-
+  
   signInWithGoogle(): Promise<UserCredential> {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(this.firebaseAuth, provider)
@@ -108,11 +115,49 @@ export class AuthService {
         return userCredential;
       })
       .catch((error) => {
-        this.toastr.error(error.message);
+        const errorMessage = this.handleAuthError(error);
+        this.toastr.error(errorMessage);
         throw error;
       });
   }
 
+
+//  ============================== Error Messages ====================================== //
+handleAuthError(error: any): string {
+  let errorMessage = 'An error occurred during login. Please try again.';
+  
+  switch (error.code) {
+    case 'auth/user-not-found':
+      errorMessage = 'No user found with this email.';
+      break;
+    case 'auth/wrong-password':
+      errorMessage = 'Incorrect password. Please try again.';
+      break;
+    case 'auth/invalid-email':
+      errorMessage = 'Invalid email format. Please check your email.';
+      break;
+    case 'auth/user-disabled':
+      errorMessage = 'This account has been disabled by an administrator.';
+      break;
+    case 'auth/account-exists-with-different-credential':
+      errorMessage = 'An account already exists with a different credential.';
+      break;
+    case 'auth/popup-closed-by-user':
+      errorMessage = 'The popup was closed before completing the sign in. Please try again.';
+      break;
+    case 'auth/cancelled-popup-request':
+      errorMessage = 'Popup request was canceled. Please try again.';
+      break;
+    case 'auth/invalid-credential':
+      errorMessage = "Invalid email or password";
+      break;
+    default:
+      errorMessage = error.message;
+      break;
+  }
+
+  return errorMessage;
+}
   updateEmail(newEmail: string): Promise<void> {
     const user = this.currentUserSubject.value;
     if (!user) return Promise.reject(new Error('User not logged in'));
@@ -128,7 +173,7 @@ export class AuthService {
     const credential = EmailAuthProvider.credential(user.email || '', oldPassword);
     return reauthenticateWithCredential(user, credential)
       .then(() => {
-        // Use the updatePassword function with the user and new password
+      
         return updatePassword(user, newPassword);
       })
       .catch((error) => {
